@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>풋살 팀 만들기</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .team-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .selection-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .team-buttons {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .team-count-btn {
+            width: 120px;
+            height: 120px;
+            font-size: 48px;
+            font-weight: bold;
+            background-color: #fff;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .team-count-btn:hover {
+            border-color: #5ba83f;
+            background-color: #f0f8ec;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(91, 168, 63, 0.3);
+        }
+
+        .team-count-btn.selected {
+            background-color: #5ba83f;
+            color: white;
+            border-color: #5ba83f;
+        }
+
+        .method-selection {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .method-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .method-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .manual-btn {
+            background-color: #5ba83f;
+            color: white;
+        }
+
+        .manual-btn:hover {
+            background-color: #7bc34a;
+            box-shadow: 0 4px 12px rgba(91, 168, 63, 0.3);
+        }
+
+        .auto-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .auto-btn:hover {
+            background-color: #0b7dda;
+            box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+        }
+
+        .auto-btn:disabled,
+        .manual-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="index.html">메인</a>
+            <a href="records.html">기록실</a>
+            <a href="#">로그인</a>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="main-content">
+            <!-- 제목 -->
+            <div class="section">
+                <h2>풋살 팀 만들기</h2>
+                <p style="font-size: 14px; color: #666; margin-top: 10px;">5vs5 풋살 경기를 위한 팀을 구성하세요</p>
+            </div>
+
+            <!-- 팀 개수 선택 -->
+            <div class="team-selection">
+                <div class="selection-title">몇 개의 팀을 만들겠습니까?</div>
+                <div class="team-buttons">
+                    <button class="team-count-btn" onclick="selectTeamCount(2)">2</button>
+                    <button class="team-count-btn" onclick="selectTeamCount(3)">3</button>
+                    <button class="team-count-btn" onclick="selectTeamCount(4)">4</button>
+                </div>
+            </div>
+
+            <!-- 방법 선택 -->
+            <div class="method-selection">
+                <div class="method-buttons">
+                    <button class="method-btn manual-btn" id="manualBtn" onclick="goToManualSetup()" disabled>직접 짜기</button>
+                    <button class="method-btn auto-btn" id="autoBtn" onclick="goToAutoSetup()" disabled>자동으로 짜기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedTeamCount = 0;
+
+        function selectTeamCount(count) {
+            selectedTeamCount = count;
+
+            // 모든 버튼에서 selected 클래스 제거
+            document.querySelectorAll('.team-count-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // 선택된 버튼에 selected 클래스 추가
+            event.target.classList.add('selected');
+
+            // 방법 선택 버튼 활성화
+            document.getElementById('manualBtn').disabled = false;
+            document.getElementById('autoBtn').disabled = false;
+
+            console.log('선택된 팀 개수:', count);
+        }
+
+        function goToManualSetup() {
+            if (selectedTeamCount === 0) {
+                alert('팀 개수를 먼저 선택하세요!');
+                return;
+            }
+
+            // 세션스토리지에 팀 개수 저장 (일회용)
+            sessionStorage.setItem('futsalTeamCount', selectedTeamCount);
+
+            // 팀 설정 페이지로 이동
+            location.href = 'futsal-teams.html';
+        }
+
+        function goToAutoSetup() {
+            if (selectedTeamCount === 0) {
+                alert('팀 개수를 먼저 선택하세요!');
+                return;
+            }
+
+            // 세션스토리지에 팀 개수 저장 (일회용)
+            sessionStorage.setItem('futsalTeamCount', selectedTeamCount);
+
+            // 선수 실력 평가 페이지로 이동
+            location.href = 'futsal-auto.html';
+        }
+    </script>
+</body>
+</html>

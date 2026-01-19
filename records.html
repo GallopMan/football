@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기록실</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2d5016;
+            --field-green: #5ba83f;
+            --light-green: #7bc34a;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray-border: #ddd;
+            --accent: #ff6b6b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* 헤더 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary-green);
+            font-size: 28px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            background: var(--gray-border);
+            color: var(--primary-green);
+        }
+
+        .btn-back:hover {
+            background: #ccc;
+        }
+
+        .btn-edit {
+            background: var(--field-green);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: var(--light-green);
+        }
+
+        /* 시즌 선택 섹션 */
+        .season-section {
+            background: var(--white);
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .season-section h3 {
+            color: var(--primary-green);
+            margin-bottom: 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .season-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .season-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .season-input-group label {
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .season-input-group input {
+            padding: 10px;
+            border: 2px solid var(--gray-border);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .season-input-group input:focus {
+            outline: none;
+            border-color: var(--field-green);
+        }
+
+        .season-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-create-season {
+            flex: 1;
+            padding: 12px;
+            background: var(--field-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-create-season:hover {
+            background: var(--light-green);
+        }
+
+        /* 저장된 시즌 목록 */
+        .seasons-list {
+            margin-top: 20px;
+        }
+
+        .seasons-list h4 {
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .season-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--gray-light);
+            border-radius: 8px;
+            border-left: 4px solid var(--field-green);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .season-item:hover {
+            background: #e8f5e9;
+            transform: translateX(4px);
+        }
+
+        .season-item.active {
+            background: #e8f5e9;
+            border-left-color: var(--light-green);
+            box-shadow: 0 2px 8px rgba(91, 168, 63, 0.2);
+        }
+
+        .season-item-info {
+            flex: 1;
+        }
+
+        .season-item-name {
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .season-item-date {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .season-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .btn-delete {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+
+        /* 팀 정보 */
+        .team-selector {
+            background: var(--white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-info-display {
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--field-green);
+        }
+
+        .team-info-display h2 {
+            color: var(--primary-green);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .team-info-display p {
+            color: #555;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        /* 선수 목록 */
+        .players-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .player-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .player-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .player-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .player-number {
+            background: var(--field-green);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+
+        .player-name {
+            flex: 1;
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .stat-item.edit-mode {
+            border: 2px solid var(--field-green);
+            background: #f0f8ff;
+        }
+
+        .stat-label {
+            color: #999;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            color: var(--primary-green);
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-controls {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .stat-item.edit-mode .stat-controls {
+            display: flex;
+        }
+
+        .stat-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            background: var(--field-green);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .stat-btn:hover {
+            background: var(--light-green);
+            transform: scale(1.1);
+        }
+
+        .stat-btn.minus {
+            background: var(--accent);
+        }
+
+        .stat-btn.minus:hover {
+            background: #ff5252;
+        }
+
+        /* MOM 체크박스 */
+        .mom-checkbox {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .stat-item.edit-mode .mom-checkbox {
+            display: flex;
+        }
+
+        .mom-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .mom-checkbox label {
+            cursor: pointer;
+            color: var(--primary-green);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* 하단 버튼 */
+        .footer-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .btn-large {
+            padding: 14px 40px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-save-large {
+            background: var(--field-green);
+            color: white;
+        }
+
+        .btn-save-large:hover {
+            background: var(--light-green);
+            box-shadow: 0 4px 12px rgba(123, 195, 74, 0.3);
+        }
+
+        .btn-cancel-large {
+            background: var(--gray-border);
+            color: var(--primary-green);
+        }
+
+        .btn-cancel-large:hover {
+            background: #ccc;
+        }
+
+        /* 메시지 */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--field-green);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .no-team-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 16px;
+            font-style: italic;
+        }
+
+        .no-team-message a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: var(--field-green);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-style: normal;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .no-team-message a:hover {
+            background: var(--light-green);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .player-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-buttons {
+                width: 100%;
+            }
+
+            .header-buttons button {
+                flex: 1;
+            }
+
+            .season-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>📊 기록실</h1>
+            <div class="header-buttons">
+                <button class="btn btn-back" onclick="goBack()">← 뒤로가기</button>
+                <button class="btn btn-edit" id="editBtn" onclick="toggleEditMode()">수정</button>
+            </div>
+        </div>
+
+        <!-- 시즌 선택 섹션 -->
+        <div class="season-section">
+            <h3>📅 시즌 관리</h3>
+            
+            <div class="season-grid">
+                <div class="season-input-group">
+                    <label for="seasonName">시즌 이름</label>
+                    <input type="text" id="seasonName" placeholder="예: 2024 봄 시즌">
+                </div>
+                <div class="season-input-group">
+                    <label for="startDate">시작일</label>
+                    <input type="date" id="startDate">
+                </div>
+                <div class="season-input-group">
+                    <label for="endDate">종료일</label>
+                    <input type="date" id="endDate">
+                </div>
+            </div>
+
+            <div class="season-buttons">
+                <button class="btn-create-season" onclick="createSeason()">시즌 생성</button>
+            </div>
+
+            <!-- 저장된 시즌 목록 -->
+            <div class="seasons-list" id="seasonsList">
+                <!-- 저장된 시즌이 여기에 표시됩니다 -->
+            </div>
+        </div>
+
+        <!-- 팀 정보 -->
+        <div class="team-selector" id="teamSelector">
+            <!-- 팀 정보가 여기에 표시됩니다 -->
+        </div>
+
+        <!-- 선수 기록 -->
+        <div class="players-container" id="playersContainer">
+            <!-- 선수들의 기록이 여기에 표시됩니다 -->
+        </div>
+
+        <!-- 하단 버튼 (편집 모드) -->
+        <div class="footer-buttons" id="footerButtons" style="display: none;">
+            <button class="btn-large btn-save-large" onclick="saveRecords()">저장</button>
+            <button class="btn-large btn-cancel-large" onclick="cancelEdit()">취소</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
+
+    <script>
+        let currentTeam = null;
+        let isEditMode = false;
+        let currentSeasonId = null;
+        let seasons = []; // { id, name, startDate, endDate, records: {} }
+        let tempRecords = {};
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', function() {
+            loadTeamData();
+            loadSeasons();
+            renderUI();
+        });
+
+        // 팀 데이터 로드
+        function loadTeamData() {
+            const savedData = localStorage.getItem('teamSetup');
+            
+            if (!savedData) {
+                document.getElementById('teamSelector').innerHTML = `
+                    <p class="no-team-message">
+                        저장된 팀이 없습니다.<br>
+                        먼저 팀을 구성해주세요.<br>
+                        <a href="index.html">← 메인으로</a>
+                    </p>
+                `;
+                document.getElementById('playersContainer').innerHTML = '';
+                return;
+            }
+
+            currentTeam = JSON.parse(savedData);
+        }
+
+        // 시즌 로드
+        function loadSeasons() {
+            const saved = localStorage.getItem('allSeasons');
+            if (saved) {
+                seasons = JSON.parse(saved);
+            }
+        }
+
+        // 시즌 생성
+        function createSeason() {
+            const name = document.getElementById('seasonName').value.trim();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!name) {
+                alert('시즌 이름을 입력해주세요.');
+                return;
+            }
+
+            if (!startDate || !endDate) {
+                alert('시작일과 종료일을 선택해주세요.');
+                return;
+            }
+
+            if (startDate > endDate) {
+                alert('시작일이 종료일보다 클 수 없습니다.');
+                return;
+            }
+
+            const seasonId = Date.now().toString();
+            const records = {};
+
+            // 각 선수별 기록 초기화
+            currentTeam.players.forEach(player => {
+                records[player.id] = {
+                    name: player.name,
+                    number: player.number,
+                    matches: 0,
+                    goals: 0,
+                    assists: 0,
+                    mom: 0
+                };
+            });
+
+            const newSeason = {
+                id: seasonId,
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                records: records
+            };
+
+            seasons.push(newSeason);
+            localStorage.setItem('allSeasons', JSON.stringify(seasons));
+
+            // 입력창 초기화
+            document.getElementById('seasonName').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+
+            // 새로 생성된 시즌 선택
+            selectSeason(seasonId);
+            renderSeasonsList();
+        }
+
+        // 시즌 선택
+        function selectSeason(seasonId) {
+            currentSeasonId = seasonId;
+            const season = seasons.find(s => s.id === seasonId);
+            
+            if (season) {
+                tempRecords = JSON.parse(JSON.stringify(season.records));
+                renderUI();
+            }
+        }
+
+        // 시즌 삭제
+        function deleteSeason(seasonId, event) {
+            event.stopPropagation();
+            
+            if (confirm('이 시즌을 삭제하시겠습니까?')) {
+                seasons = seasons.filter(s => s.id !== seasonId);
+                localStorage.setItem('allSeasons', JSON.stringify(seasons));
+
+                if (currentSeasonId === seasonId) {
+                    currentSeasonId = null;
+                    tempRecords = {};
+                }
+
+                renderSeasonsList();
+                renderUI();
+            }
+        }
+
+        // 시즌 목록 렌더링
+        function renderSeasonsList() {
+            const seasonsList = document.getElementById('seasonsList');
+
+            if (seasons.length === 0) {
+                seasonsList.innerHTML = '<p style="color: #999; text-align: center; padding: 20px;">생성된 시즌이 없습니다.</p>';
+                return;
+            }
+
+            let html = '<h4>📋 저장된 시즌</h4>';
+
+            seasons.forEach(season => {
+                const isActive = currentSeasonId === season.id;
+                const startDate = new Date(season.startDate).toLocaleDateString('ko-KR');
+                const endDate = new Date(season.endDate).toLocaleDateString('ko-KR');
+
+                html += `
+                    <div class="season-item ${isActive ? 'active' : ''}" onclick="selectSeason('${season.id}')">
+                        <div class="season-item-info">
+                            <div class="season-item-name">${season.name}</div>
+                            <div class="season-item-date">${startDate} ~ ${endDate}</div>
+                        </div>
+                        <div class="season-item-actions">
+                            <button class="btn-small btn-delete" onclick="deleteSeason('${season.id}', event)">삭제</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            seasonsList.innerHTML = html;
+        }
+
+        // UI 렌더링
+        function renderUI() {
+            if (!currentTeam) return;
+
+            renderTeamInfo();
+            renderPlayerRecords();
+            renderSeasonsList();
+        }
+
+        // 팀 정보 렌더링
+        function renderTeamInfo() {
+            const onFieldPlayers = currentTeam.players.filter(p => p.onField);
+            const subPlayers = currentTeam.players.filter(p => !p.onField);
+
+            document.getElementById('teamSelector').innerHTML = `
+                <h3>팀 정보</h3>
+                <div class="team-info-display">
+                    <h2> ${currentTeam.teamName}</h2>
+                    <p>필드 선수: <strong>${onFieldPlayers.length}명</strong></p>
+                    <p>교대 선수: <strong>${subPlayers.length}명</strong></p>
+                    <p>전체: <strong>${currentTeam.players.length}명</strong></p>
+                </div>
+            `;
+        }
+
+        // 선수 기록 렌더링
+        function renderPlayerRecords() {
+            if (!currentSeasonId || Object.keys(tempRecords).length === 0) {
+                document.getElementById('playersContainer').innerHTML = `
+                    <p style="text-align: center; padding: 40px 20px; color: #999;">
+                        시즌을 선택해주세요.
+                    </p>
+                `;
+                return;
+            }
+
+            let html = '';
+
+            const fieldPlayers = currentTeam.players.filter(p => p.onField);
+            const benchPlayers = currentTeam.players.filter(p => !p.onField);
+            const allPlayers = [...fieldPlayers, ...benchPlayers];
+
+            allPlayers.forEach(player => {
+                const record = tempRecords[player.id] || {
+                    matches: 0,
+                    goals: 0,
+                    assists: 0,
+                    mom: 0
+                };
+
+                html += `
+                    <div class="player-card">
+                        <div class="player-header">
+                            <div class="player-number">${player.number}</div>
+                            <div class="player-name">${player.name}</div>
+                        </div>
+
+                        <div class="player-stats">
+                            <!-- 경기수 -->
+                            <div class="stat-item" id="stat-matches-${player.id}">
+                                <div class="stat-label">경기수</div>
+                                <div class="stat-value" id="value-matches-${player.id}">${record.matches}</div>
+                                <div class="stat-controls">
+                                    <button class="stat-btn minus" onclick="decrementStat(${player.id}, 'matches')">−</button>
+                                    <button class="stat-btn" onclick="incrementStat(${player.id}, 'matches')">+</button>
+                                </div>
+                            </div>
+
+                            <!-- 득점 -->
+                            <div class="stat-item" id="stat-goals-${player.id}">
+                                <div class="stat-label">득점</div>
+                                <div class="stat-value" id="value-goals-${player.id}">${record.goals}</div>
+                                <div class="stat-controls">
+                                    <button class="stat-btn minus" onclick="decrementStat(${player.id}, 'goals')">−</button>
+                                    <button class="stat-btn" onclick="incrementStat(${player.id}, 'goals')">+</button>
+                                </div>
+                            </div>
+
+                            <!-- 도움 -->
+                            <div class="stat-item" id="stat-assists-${player.id}">
+                                <div class="stat-label">도움</div>
+                                <div class="stat-value" id="value-assists-${player.id}">${record.assists}</div>
+                                <div class="stat-controls">
+                                    <button class="stat-btn minus" onclick="decrementStat(${player.id}, 'assists')">−</button>
+                                    <button class="stat-btn" onclick="incrementStat(${player.id}, 'assists')">+</button>
+                                </div>
+                            </div>
+
+                            <!-- MOM -->
+                            <div class="stat-item" id="stat-mom-${player.id}">
+                                <div class="stat-label">MOM</div>
+                                <div class="stat-value" id="value-mom-${player.id}">${record.mom}</div>
+                                <div class="mom-checkbox">
+                                    <input type="checkbox" id="mom-${player.id}" 
+                                        onchange="toggleMOM(${player.id})" 
+                                        ${record.mom > 0 ? 'checked' : ''}>
+                                    <label for="mom-${player.id}">선정</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('playersContainer').innerHTML = html;
+        }
+
+        // 스탯 증가
+        function incrementStat(playerId, statType) {
+            if (!tempRecords[playerId]) {
+                tempRecords[playerId] = { matches: 0, goals: 0, assists: 0, mom: 0 };
+            }
+            tempRecords[playerId][statType]++;
+            updateStatDisplay(playerId, statType);
+        }
+
+        // 스탯 감소
+        function decrementStat(playerId, statType) {
+            if (!tempRecords[playerId]) {
+                tempRecords[playerId] = { matches: 0, goals: 0, assists: 0, mom: 0 };
+            }
+            if (tempRecords[playerId][statType] > 0) {
+                tempRecords[playerId][statType]--;
+            }
+            updateStatDisplay(playerId, statType);
+        }
+
+        // 스탯 표시 업데이트
+        function updateStatDisplay(playerId, statType) {
+            const value = tempRecords[playerId][statType];
+            document.getElementById(`value-${statType}-${playerId}`).textContent = value;
+        }
+
+        // MOM 토글
+        function toggleMOM(playerId) {
+            if (!tempRecords[playerId]) {
+                tempRecords[playerId] = { matches: 0, goals: 0, assists: 0, mom: 0 };
+            }
+            const checkbox = document.getElementById(`mom-${playerId}`);
+            tempRecords[playerId].mom = checkbox.checked ? 1 : 0;
+            document.getElementById(`value-mom-${playerId}`).textContent = tempRecords[playerId].mom;
+        }
+
+        // 편집 모드 토글
+        function toggleEditMode() {
+            if (!currentSeasonId) {
+                alert('시즌을 선택해주세요.');
+                return;
+            }
+
+            isEditMode = !isEditMode;
+            const editBtn = document.getElementById('editBtn');
+            const footerButtons = document.getElementById('footerButtons');
+            const statItems = document.querySelectorAll('.stat-item');
+
+            if (isEditMode) {
+                editBtn.textContent = '편집 중...';
+                editBtn.style.background = '#ccc';
+                editBtn.style.color = '#999';
+                editBtn.style.cursor = 'not-allowed';
+                footerButtons.style.display = 'flex';
+                statItems.forEach(item => item.classList.add('edit-mode'));
+            } else {
+                editBtn.textContent = '수정';
+                editBtn.style.background = 'var(--field-green)';
+                editBtn.style.color = 'white';
+                editBtn.style.cursor = 'pointer';
+                footerButtons.style.display = 'none';
+                statItems.forEach(item => item.classList.remove('edit-mode'));
+            }
+        }
+
+        // 기록 저장
+        function saveRecords() {
+            const season = seasons.find(s => s.id === currentSeasonId);
+            if (season) {
+                season.records = JSON.parse(JSON.stringify(tempRecords));
+                localStorage.setItem('allSeasons', JSON.stringify(seasons));
+
+                const message = document.getElementById('successMessage');
+                message.style.display = 'block';
+
+                setTimeout(() => {
+                    message.style.display = 'none';
+                }, 2000);
+
+                toggleEditMode();
+            }
+        }
+
+        // 편집 취소
+        function cancelEdit() {
+            const season = seasons.find(s => s.id === currentSeasonId);
+            if (season) {
+                tempRecords = JSON.parse(JSON.stringify(season.records));
+                renderPlayerRecords();
+            }
+            toggleEditMode();
+        }
+
+        // 뒤로가기
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

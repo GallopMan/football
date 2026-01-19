@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자동 팀 분배 결과</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+
+        .field-config {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .config-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d5016;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .field-input {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .field-input label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .field-input input {
+            width: 150px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .field-input input:focus {
+            outline: none;
+            border-color: #5ba83f;
+        }
+
+        .generate-btn {
+            padding: 12px 40px;
+            background-color: #5ba83f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .generate-btn:hover {
+            background-color: #7bc34a;
+        }
+
+        .teams-result {
+            display: grid;
+            gap: 30px;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .teams-result.count-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .teams-result.count-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .teams-result.count-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .team-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border: 3px solid #ddd;
+        }
+
+        .team-box.team-a { border-color: #ff6b6b; }
+        .team-box.team-b { border-color: #4ecdc4; }
+        .team-box.team-c { border-color: #ffe66d; }
+        .team-box.team-d { border-color: #a8dadc; }
+
+        .team-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            text-align: center;
+        }
+
+        .team-box.team-a .team-header { color: #ff6b6b; border-color: #ff6b6b; }
+        .team-box.team-b .team-header { color: #4ecdc4; border-color: #4ecdc4; }
+        .team-box.team-c .team-header { color: #d4a200; border-color: #ffe66d; }
+        .team-box.team-d .team-header { color: #457b9d; border-color: #a8dadc; }
+
+        .team-stats {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2d5016;
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-number {
+            background: #5ba83f;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .player-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #2d5016;
+        }
+
+        .player-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .player-stars .star {
+            font-size: 14px;
+            color: #ffd700;
+        }
+
+        .bottom-section {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .restart-btn {
+            padding: 15px 60px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #2d5016;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            background-color: #5ba83f;
+            box-shadow: 0 4px 12px rgba(91, 168, 63, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="index.html">메인</a>
+            <a href="futsal.html">처음부터</a>
+        </div>
+
+        <!-- 헤더 -->
+        <div class="page-header">
+            <div class="page-title">자동 팀 분배</div>
+        </div>
+
+        <!-- 필드 플레이어 수 설정 -->
+        <div class="field-config" id="fieldConfig">
+            <div class="config-title">각 팀의 필드 플레이어 수를 입력하세요</div>
+            <div class="field-input">
+                <label>필드 플레이어 수:</label>
+                <input type="number" id="fieldPlayersInput" min="1" max="10" value="5" placeholder="5">
+                <button class="generate-btn" onclick="generateTeams()">팀 분배하기</button>
+            </div>
+        </div>
+
+        <!-- 팀 분배 결과 -->
+        <div class="teams-result hidden" id="teamsResult">
+            <!-- 팀들이 여기에 동적으로 생성됩니다 -->
+        </div>
+
+        <!-- 버튼 -->
+        <div class="bottom-section hidden" id="bottomSection">
+            <button class="restart-btn" onclick="location.href='futsal.html'">처음으로</button>
+        </div>
+    </div>
+
+    <script>
+        const teamNames = ['A팀', 'B팀', 'C팀', 'D팀'];
+        const teamClasses = ['team-a', 'team-b', 'team-c', 'team-d'];
+        let players = [];
+        let teamCount = 0;
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 세션스토리지에서 데이터 가져오기
+            const playersData = sessionStorage.getItem('futsalPlayers');
+            teamCount = parseInt(sessionStorage.getItem('futsalTeamCount')) || 2;
+
+            if (!playersData) {
+                alert('선수 데이터가 없습니다!');
+                location.href = 'futsal.html';
+                return;
+            }
+
+            players = JSON.parse(playersData);
+            console.log('선수 데이터:', players);
+            console.log('팀 개수:', teamCount);
+        });
+
+        function generateTeams() {
+            const fieldPlayersCount = parseInt(document.getElementById('fieldPlayersInput').value);
+
+            if (!fieldPlayersCount || fieldPlayersCount < 1) {
+                alert('올바른 필드 플레이어 수를 입력하세요!');
+                return;
+            }
+
+            // 최소 선수 수 확인
+            const minPlayers = fieldPlayersCount * teamCount;
+            if (players.length < minPlayers) {
+                alert(`최소 ${minPlayers}명의 선수가 필요합니다! (${teamCount}팀 × ${fieldPlayersCount}명)`);
+                return;
+            }
+
+            // 팀 자동 분배 (실력 균등 분배)
+            const teams = balanceTeams(players, teamCount, fieldPlayersCount);
+
+            // 결과 표시
+            displayTeams(teams);
+
+            // UI 변경
+            document.getElementById('fieldConfig').classList.add('hidden');
+            document.getElementById('teamsResult').classList.remove('hidden');
+            document.getElementById('bottomSection').classList.remove('hidden');
+        }
+
+        function balanceTeams(players, teamCount, fieldPlayersCount) {
+            // 선수들을 실력 순으로 정렬 (높은 순)
+            const sortedPlayers = [...players].sort((a, b) => b.rating - a.rating);
+
+            // 팀 초기화
+            const teams = Array.from({ length: teamCount }, (_, i) => ({
+                name: teamNames[i],
+                players: [],
+                totalRating: 0,
+                avgRating: 0
+            }));
+
+            // 스네이크 드래프트 방식으로 분배
+            // 1번 팀 -> 2번 팀 -> 3번 팀 -> 4번 팀 -> 4번 팀 -> 3번 팀 -> 2번 팀 -> 1번 팀 반복
+            let currentTeam = 0;
+            let direction = 1;
+
+            sortedPlayers.forEach((player, index) => {
+                teams[currentTeam].players.push(player);
+                teams[currentTeam].totalRating += player.rating;
+
+                // 다음 팀으로 이동
+                if (direction === 1) {
+                    currentTeam++;
+                    if (currentTeam >= teamCount) {
+                        currentTeam = teamCount - 1;
+                        direction = -1;
+                    }
+                } else {
+                    currentTeam--;
+                    if (currentTeam < 0) {
+                        currentTeam = 0;
+                        direction = 1;
+                    }
+                }
+            });
+
+            // 평균 점수 계산
+            teams.forEach(team => {
+                team.avgRating = team.players.length > 0
+                    ? (team.totalRating / team.players.length).toFixed(2)
+                    : 0;
+            });
+
+            console.log('분배된 팀:', teams);
+            return teams;
+        }
+
+        function displayTeams(teams) {
+            const container = document.getElementById('teamsResult');
+            container.className = `teams-result count-${teamCount}`;
+            container.innerHTML = '';
+
+            teams.forEach((team, index) => {
+                const teamBox = document.createElement('div');
+                teamBox.className = `team-box ${teamClasses[index]}`;
+
+                teamBox.innerHTML = `
+                    <div class="team-header">${team.name}</div>
+                    <div class="team-stats">
+                        <div class="stat-label">평균 실력</div>
+                        <div class="stat-value">${team.avgRating}점</div>
+                        <div class="stat-label" style="margin-top: 10px;">총 ${team.players.length}명</div>
+                    </div>
+                    <div class="player-list">
+                        ${team.players.map(player => `
+                            <div class="player-item">
+                                <div class="player-info">
+                                    <div class="player-number">${player.number}</div>
+                                    <div class="player-name">${player.name}</div>
+                                </div>
+                                <div class="player-stars">
+                                    ${getStarsHTML(player.rating)}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                container.appendChild(teamBox);
+            });
+        }
+
+        function getStarsHTML(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    html += '<span class="star">★</span>';
+                } else {
+                    html += '<span class="star" style="color: #ddd;">★</span>';
+                }
+            }
+            return html;
+        }
+    </script>
+</body>
+</html>

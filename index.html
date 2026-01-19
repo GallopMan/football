@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팀 매니저</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 모달 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #5ba83f;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .team-info-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #5ba83f;
+            margin-bottom: 20px;
+        }
+
+        .team-info-box h3 {
+            color: #2d5016;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .team-info-box p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .player-count {
+            font-weight: bold;
+            color: #5ba83f;
+            font-size: 16px;
+        }
+
+        .players-section {
+            margin-bottom: 20px;
+        }
+
+        .players-section h4 {
+            color: #2d5016;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #5ba83f;
+            font-size: 15px;
+        }
+
+        .player-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #5ba83f;
+        }
+
+        .player-number {
+            background: #5ba83f;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 13px;
+        }
+
+        .player-name {
+            color: #2d5016;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .no-team-message {
+            color: #999;
+            text-align: center;
+            padding: 40px 20px;
+            font-style: italic;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .modal-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .modal-close {
+            background: #ddd;
+            color: #2d5016;
+        }
+
+        .modal-close:hover {
+            background: #ccc;
+        }
+
+        .modal-edit {
+            background: #5ba83f;
+            color: white;
+        }
+
+        .modal-edit:hover {
+            background: #7bc34a;
+        }
+
+        .modal-auto {
+            background: #2196F3;
+            color: white;
+        }
+
+        .modal-auto:hover {
+            background: #0b7dda;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="records.html">기록실</a>
+            <a href="#" onclick="showMyTeam(event)">나의팀</a>
+            <a href="team-info.html">팀 정보 수정</a>
+            <a href="#">로그인</a>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="main-content">
+            <!-- 축구 팀짜기 -->
+            <div class="section">
+                <h2>축구 팀짜기</h2>
+            </div>
+
+            <!-- 새 팀을 구리기 -->
+            <div class="section">
+                <h2>새 팀을 구리기</h2>
+            </div>
+
+            <!-- 하단 버튼들 -->
+            <div class="buttons-section">
+                <button class="btn" onclick="location.href='team.html'">축구</button>
+                <button class="btn" onclick="location.href='futsal.html'">풋살</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 나의팀 모달 -->
+    <div id="myTeamModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">📋 나의 팀</div>
+            <div class="modal-body" id="modalBody">
+                <!-- 팀 정보가 여기에 표시됩니다 -->
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-close" onclick="closeModal()">닫기</button>
+                <button class="modal-edit" onclick="editTeam()">팀 수정하기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 나의팀 클릭 시 모달 표시
+        function showMyTeam(event) {
+            event.preventDefault();
+            const savedData = localStorage.getItem('teamSetup');
+            const modal = document.getElementById('myTeamModal');
+            const modalBody = document.getElementById('modalBody');
+
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                const onFieldPlayers = data.players.filter(p => p.onField);
+                const subPlayers = data.players.filter(p => !p.onField);
+
+                let html = `
+                    <div class="team-info-box">
+                        <h3>⚽ ${data.teamName}</h3>
+                        <p>필드 선수: <span class="player-count">${onFieldPlayers.length}명</span></p>
+                        <p>교대 선수: <span class="player-count">${subPlayers.length}명</span></p>
+                        <p>전체: <span class="player-count">${data.players.length}명</span></p>
+                    </div>
+
+                    <div class="players-section">
+                        <h4>필드 선수 (${onFieldPlayers.length}명)</h4>
+                `;
+
+                if (onFieldPlayers.length > 0) {
+                    html += '<div class="player-list">';
+                    onFieldPlayers.forEach(player => {
+                        html += `
+                            <div class="player-item">
+                                <div class="player-number">${player.number}</div>
+                                <div class="player-name">${player.name}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<p style="color: #999; text-align: center; padding: 10px;">필드 선수가 없습니다.</p>';
+                }
+
+                html += `
+                    </div>
+
+                    <div class="players-section">
+                        <h4>교대 선수 (${subPlayers.length}명)</h4>
+                `;
+
+                if (subPlayers.length > 0) {
+                    html += '<div class="player-list">';
+                    subPlayers.forEach(player => {
+                        html += `
+                            <div class="player-item">
+                                <div class="player-number">${player.number}</div>
+                                <div class="player-name">${player.name}</div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                } else {
+                    html += '<p style="color: #999; text-align: center; padding: 10px;">교대 선수가 없습니다.</p>';
+                }
+
+                html += '</div>';
+
+                modalBody.innerHTML = html;
+            } else {
+                modalBody.innerHTML = `
+                    <p class="no-team-message">
+                        저장된 팀이 없습니다.<br><br>
+                        먼저 팀을 구성해주세요.
+                    </p>
+                `;
+            }
+
+            modal.style.display = 'block';
+        }
+
+        // 모달 닫기
+        function closeModal() {
+            document.getElementById('myTeamModal').style.display = 'none';
+        }
+
+        // 팀 수정하기
+        function editTeam() {
+            closeModal();
+            location.href = 'field.html';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const modal = document.getElementById('myTeamModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

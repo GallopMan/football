@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선수 입력</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="index.html">기록실</a>
+            <a href="#">나의팀</a>
+            <a href="#">로그인</a>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <div class="main-content">
+            <!-- 제목 -->
+            <div class="section">
+                <h2>선수 명단</h2>
+            </div>
+
+            <!-- 선수 입력 폼 -->
+            <div class="players-input-section">
+                <div id="playersContainer"></div>
+                
+                <button class="add-player-btn" onclick="addPlayerField()">+</button>
+            </div>
+
+            <!-- 완료 버튼 -->
+            <div class="button-section">
+                <button class="complete-btn" onclick="goToField()">완료</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

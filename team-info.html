@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>팀 정보 수정</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .info-form {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5ba83f;
+        }
+
+        /* 로고 업로드 */
+        .logo-upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-preview {
+            width: 150px;
+            height: 150px;
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #f9f9f9;
+        }
+
+        .logo-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-placeholder {
+            color: #999;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .file-input-label {
+            padding: 10px 20px;
+            background-color: #5ba83f;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #7bc34a;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* 선택 버튼 그룹 */
+        .select-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .select-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .select-btn:hover {
+            border-color: #5ba83f;
+            background: #f0f8ec;
+        }
+
+        .select-btn.active {
+            border-color: #5ba83f;
+            background: #5ba83f;
+            color: white;
+        }
+
+        /* 별점 */
+        .star-rating-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .star {
+            font-size: 36px;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+
+        /* 저장 버튼 */
+        .save-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .save-btn {
+            padding: 15px 60px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #2d5016;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .save-btn:hover {
+            background-color: #5ba83f;
+            box-shadow: 0 4px 12px rgba(91, 168, 63, 0.3);
+        }
+
+        .cancel-btn {
+            padding: 15px 60px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #ddd;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 15px;
+        }
+
+        .cancel-btn:hover {
+            background-color: #ccc;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #5ba83f;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="index.html">메인</a>
+            <a href="records.html">기록실</a>
+            <a href="#">로그인</a>
+        </div>
+
+        <div class="page-container">
+            <!-- 헤더 -->
+            <div class="page-header">
+                <div class="page-title">⚽ 팀 정보 수정</div>
+                <div class="page-subtitle">우리 팀의 상세 정보를 입력하세요</div>
+            </div>
+
+            <!-- 폼 -->
+            <div class="info-form">
+                <!-- 팀 로고 -->
+                <div class="form-section">
+                    <label class="form-label">팀 로고</label>
+                    <div class="logo-upload-section">
+                        <div class="logo-preview" id="logoPreview">
+                            <div class="logo-placeholder">로고 이미지를<br>업로드하세요</div>
+                        </div>
+                        <label for="logoInput" class="file-input-label">이미지 업로드</label>
+                        <input type="file" id="logoInput" class="file-input" accept="image/*" onchange="handleLogoUpload(event)">
+                    </div>
+                </div>
+
+                <!-- 팀 이름 -->
+                <div class="form-section">
+                    <label class="form-label">팀 이름</label>
+                    <input type="text" id="teamName" class="form-input" placeholder="팀 이름을 입력하세요">
+                </div>
+
+                <!-- 창립일 -->
+                <div class="form-section">
+                    <label class="form-label">창립일</label>
+                    <input type="date" id="foundedDate" class="form-input">
+                </div>
+
+                <!-- 회장 -->
+                <div class="form-section">
+                    <label class="form-label">회장</label>
+                    <input type="text" id="president" class="form-input" placeholder="회장 이름을 입력하세요">
+                </div>
+
+                <!-- 부회장 -->
+                <div class="form-section">
+                    <label class="form-label">부회장</label>
+                    <input type="text" id="vicePresident" class="form-input" placeholder="부회장 이름을 입력하세요">
+                </div>
+
+                <!-- 평균 나이대 -->
+                <div class="form-section">
+                    <label class="form-label">평균 나이대</label>
+                    <div class="select-group" id="ageGroup">
+                        <button class="select-btn" onclick="selectAge('10대')">10대</button>
+                        <button class="select-btn" onclick="selectAge('20대')">20대</button>
+                        <button class="select-btn" onclick="selectAge('30대')">30대</button>
+                        <button class="select-btn" onclick="selectAge('40대')">40대</button>
+                    </div>
+                </div>
+
+                <!-- 구단 유형 -->
+                <div class="form-section">
+                    <label class="form-label">구단 유형</label>
+                    <div class="select-group" id="teamType">
+                        <button class="select-btn" onclick="selectType('대학교 소모임')">대학교 소모임</button>
+                        <button class="select-btn" onclick="selectType('회사 동호회')">회사 동호회</button>
+                        <button class="select-btn" onclick="selectType('동네팀')">동네팀</button>
+                    </div>
+                </div>
+
+                <!-- 팀 실력 -->
+                <div class="form-section">
+                    <label class="form-label">팀 실력 (5단계)</label>
+                    <div class="star-rating-section" id="teamRating">
+                        <span class="star" onclick="setRating(1)">★</span>
+                        <span class="star" onclick="setRating(2)">★</span>
+                        <span class="star" onclick="setRating(3)">★</span>
+                        <span class="star" onclick="setRating(4)">★</span>
+                        <span class="star" onclick="setRating(5)">★</span>
+                    </div>
+                </div>
+
+                <!-- 저장 버튼 -->
+                <div class="save-section">
+                    <button class="save-btn" onclick="saveTeamInfo()">저장하기</button>
+                    <button class="cancel-btn" onclick="location.href='index.html'">취소</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
+
+    <script>
+        let selectedAge = '';
+        let selectedType = '';
+        let selectedRating = 0;
+        let logoDataUrl = '';
+
+        // 페이지 로드 시 저장된 정보 불러오기
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTeamInfo();
+        });
+
+        function loadTeamInfo() {
+            const savedInfo = localStorage.getItem('teamInfo');
+            if (savedInfo) {
+                const info = JSON.parse(savedInfo);
+
+                // 로고
+                if (info.logo) {
+                    logoDataUrl = info.logo;
+                    const logoPreview = document.getElementById('logoPreview');
+                    logoPreview.innerHTML = `<img src="${info.logo}" alt="팀 로고">`;
+                }
+
+                // 기본 정보
+                document.getElementById('teamName').value = info.teamName || '';
+                document.getElementById('foundedDate').value = info.foundedDate || '';
+                document.getElementById('president').value = info.president || '';
+                document.getElementById('vicePresident').value = info.vicePresident || '';
+
+                // 나이대
+                if (info.ageGroup) {
+                    selectedAge = info.ageGroup;
+                    selectAge(info.ageGroup, true);
+                }
+
+                // 구단 유형
+                if (info.teamType) {
+                    selectedType = info.teamType;
+                    selectType(info.teamType, true);
+                }
+
+                // 실력
+                if (info.rating) {
+                    selectedRating = info.rating;
+                    setRating(info.rating, true);
+                }
+            }
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                // 이미지 파일인지 확인
+                if (!file.type.startsWith('image/')) {
+                    alert('이미지 파일만 업로드할 수 있습니다!');
+                    return;
+                }
+
+                // 파일 크기 확인 (5MB 제한)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('파일 크기는 5MB 이하여야 합니다!');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoDataUrl = e.target.result;
+                    const logoPreview = document.getElementById('logoPreview');
+                    logoPreview.innerHTML = `<img src="${logoDataUrl}" alt="팀 로고">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function selectAge(age, fromLoad = false) {
+            selectedAge = age;
+            const buttons = document.querySelectorAll('#ageGroup .select-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === age) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function selectType(type, fromLoad = false) {
+            selectedType = type;
+            const buttons = document.querySelectorAll('#teamType .select-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === type) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function setRating(rating, fromLoad = false) {
+            selectedRating = rating;
+            const stars = document.querySelectorAll('#teamRating .star');
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function saveTeamInfo() {
+            const teamName = document.getElementById('teamName').value.trim();
+
+            if (!teamName) {
+                alert('팀 이름을 입력하세요!');
+                return;
+            }
+
+            const teamInfo = {
+                logo: logoDataUrl,
+                teamName: teamName,
+                foundedDate: document.getElementById('foundedDate').value,
+                president: document.getElementById('president').value.trim(),
+                vicePresident: document.getElementById('vicePresident').value.trim(),
+                ageGroup: selectedAge,
+                teamType: selectedType,
+                rating: selectedRating,
+                updatedDate: new Date().toISOString()
+            };
+
+            // localStorage에 저장
+            localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
+
+            // 성공 메시지 표시
+            const message = document.getElementById('successMessage');
+            message.style.display = 'block';
+
+            setTimeout(() => {
+                message.style.display = 'none';
+                location.href = 'index.html';
+            }, 1500);
+
+            console.log('팀 정보 저장:', teamInfo);
+        }
+    </script>
+</body>
+</html>
