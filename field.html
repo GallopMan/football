@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>축구 팀 배치도</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #2d5016;
+            --field-green: #5ba83f;
+            --light-green: #7bc34a;
+            --white: #ffffff;
+            --gray-light: #f5f5f5;
+            --gray-border: #ddd;
+            --accent: #ff6b6b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 헤더 */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: var(--primary-green);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .team-name-display {
+            font-size: 20px;
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* 메인 레이아웃 */
+        .field-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 30px;
+            align-items: start;
+            margin-bottom: 30px;
+        }
+
+        /* 왼쪽: 선수 목록 */
+        .players-list-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .players-list-section h3 {
+            font-size: 18px;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--field-green);
+        }
+
+        .add-player-section {
+            margin-bottom: 20px;
+        }
+
+        .add-player-input {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .add-player-input input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid var(--gray-border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .add-player-input input:focus {
+            outline: none;
+            border-color: var(--field-green);
+        }
+
+        .add-player-btn {
+            padding: 10px 20px;
+            background: var(--field-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .add-player-btn:hover {
+            background: var(--light-green);
+        }
+
+        .total-players {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        /* 중앙: 축구장 */
+        .field-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: center;
+        }
+
+        .soccer-field {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 3/4;
+            background: linear-gradient(180deg, #5ba83f 0%, #7bc34a 50%, #5ba83f 100%);
+            border: 3px solid var(--primary-green);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .field-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 133'%3E%3Cpath d='M50 0 L50 133' stroke='white' stroke-width='0.5' /%3E%3Cpath d='M0 66.5 L100 66.5' stroke='white' stroke-width='0.5' /%3E%3Ccircle cx='50' cy='66.5' r='8' fill='none' stroke='white' stroke-width='0.5' /%3E%3Ccircle cx='50' cy='66.5' r='0.5' fill='white' /%3E%3Crect x='15' y='8' width='70' height='50' fill='none' stroke='white' stroke-width='0.5' /%3E%3Crect x='15' y='75' width='70' height='50' fill='none' stroke='white' stroke-width='0.5' /%3E%3Ccircle cx='50' cy='15' r='4' fill='none' stroke='white' stroke-width='0.3' /%3E%3Ccircle cx='50' cy='118' r='4' fill='none' stroke='white' stroke-width='0.3' /%3E%3C/svg%3E");
+            background-size: 100% 100%;
+            pointer-events: none;
+        }
+
+        .player-circle {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border: 3px solid var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            font-weight: bold;
+            color: white;
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .player-circle:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .player-circle.dragging {
+            opacity: 0.8;
+            cursor: grabbing;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .player-circle .player-number {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .player-circle .player-name {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        /* 오른쪽: 교대 선수 */
+        .sub-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .sub-section h3 {
+            font-size: 18px;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--field-green);
+        }
+
+        .sub-players {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .sub-player-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #fff3cd;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+            cursor: grab;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        .sub-player-item:hover {
+            transform: translateX(4px);
+            background: #ffe0b2;
+        }
+
+        .sub-player-item.dragging {
+            opacity: 0.5;
+        }
+
+        /* 하단: 버튼 */
+        .button-section {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .save-btn {
+            background: var(--field-green);
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: var(--light-green);
+            box-shadow: 0 4px 12px rgba(123, 195, 74, 0.3);
+        }
+
+        .reset-btn {
+            background: var(--gray-border);
+            color: var(--primary-green);
+        }
+
+        .reset-btn:hover {
+            background: #ccc;
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--field-green);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* 반응형 */
+        @media (max-width: 1024px) {
+            .field-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1>BEST 11</h1>
+            <div class="team-name-display" id="teamNameDisplay">우리팀</div>
+        </div>
+
+        <!-- 메인 레이아웃 -->
+        <div class="field-content">
+            <!-- 왼쪽: 선수 관리 -->
+            <div class="players-list-section">
+                <h3>선수 관리</h3>
+                <div class="add-player-section">
+                    <div class="add-player-input">
+                        <input type="text" id="newPlayerName" placeholder="선수 이름 입력">
+                        <button class="add-player-btn" onclick="addNewPlayer()">+ 추가</button>
+                    </div>
+                </div>
+                <div class="total-players" id="totalPlayers">전체 선수: 0명</div>
+            </div>
+
+            <!-- 중앙: 축구장 -->
+            <div class="field-section">
+                <div class="soccer-field" id="soccerField">
+                    <div class="field-lines"></div>
+                    <!-- 선수 원형이 여기에 표시됩니다 -->
+                </div>
+            </div>
+
+            <!-- 오른쪽: 교대 선수 -->
+            <div class="sub-section">
+                <h3>교대 선수 (SUB)</h3>
+                <div class="sub-players" id="subPlayers">
+                    <!-- 교대 선수들이 여기에 표시됩니다 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단: 버튼 -->
+        <div class="button-section">
+            <button class="btn save-btn" onclick="saveTeamSetup()">저장</button>
+            <button class="btn reset-btn" onclick="window.location.href='index.html'">메인으로</button>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
+
+    <script src="field.js"></script>
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>선수 실력 평가</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .players-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .add-player-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .add-player-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d5016;
+            margin-bottom: 20px;
+        }
+
+        .add-player-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .player-name-input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .player-name-input:focus {
+            outline: none;
+            border-color: #5ba83f;
+        }
+
+        .star-rating {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .star-rating-label {
+            font-size: 14px;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 8px;
+        }
+
+        .star {
+            font-size: 32px;
+            cursor: pointer;
+            color: #ddd;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            transform: scale(1.1);
+        }
+
+        .add-player-btn {
+            padding: 12px 30px;
+            background-color: #5ba83f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-player-btn:hover {
+            background-color: #7bc34a;
+        }
+
+        .players-list {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .players-list-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d5016;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #5ba83f;
+        }
+
+        .player-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #5ba83f;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .player-number {
+            background: #5ba83f;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .player-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #2d5016;
+        }
+
+        .player-stars {
+            display: flex;
+            gap: 4px;
+        }
+
+        .player-stars .star {
+            font-size: 18px;
+            cursor: default;
+        }
+
+        .remove-btn {
+            padding: 6px 12px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .remove-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .bottom-section {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .next-btn {
+            padding: 15px 60px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #2d5016;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover {
+            background-color: #5ba83f;
+            box-shadow: 0 4px 12px rgba(91, 168, 63, 0.3);
+        }
+
+        .next-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .total-count {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="index.html">메인</a>
+            <a href="futsal.html">뒤로가기</a>
+        </div>
+
+        <!-- 헤더 -->
+        <div class="page-header">
+            <div class="page-title">선수 실력 평가</div>
+            <div class="page-subtitle">각 선수의 실력을 별점(1~5점)으로 평가하세요</div>
+        </div>
+
+        <!-- 선수 추가 섹션 -->
+        <div class="players-container">
+            <div class="add-player-section">
+                <div class="add-player-title">새 선수 추가</div>
+                <div class="add-player-form">
+                    <input type="text" id="playerNameInput" class="player-name-input" placeholder="선수 이름 입력">
+
+                    <div class="star-rating">
+                        <span class="star-rating-label">실력 평가:</span>
+                        <div class="stars" id="starRating">
+                            <span class="star" data-value="1" onclick="setRating(1)">★</span>
+                            <span class="star" data-value="2" onclick="setRating(2)">★</span>
+                            <span class="star" data-value="3" onclick="setRating(3)">★</span>
+                            <span class="star" data-value="4" onclick="setRating(4)">★</span>
+                            <span class="star" data-value="5" onclick="setRating(5)">★</span>
+                        </div>
+                    </div>
+
+                    <button class="add-player-btn" onclick="addPlayer()">+ 선수 추가</button>
+                </div>
+            </div>
+
+            <!-- 선수 목록 -->
+            <div class="players-list">
+                <div class="players-list-title">
+                    추가된 선수 목록
+                    <span class="total-count" id="totalCount">(0명)</span>
+                </div>
+                <div id="playersList">
+                    <p style="text-align: center; color: #999; padding: 20px;">아직 추가된 선수가 없습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 다음 버튼 -->
+        <div class="bottom-section">
+            <button class="next-btn" id="nextBtn" onclick="goToTeamSetup()" disabled>팀 자동 분배하기</button>
+        </div>
+    </div>
+
+    <script>
+        let players = [];
+        let currentRating = 0;
+
+        function setRating(rating) {
+            currentRating = rating;
+            const stars = document.querySelectorAll('#starRating .star');
+
+            stars.forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function addPlayer() {
+            const nameInput = document.getElementById('playerNameInput');
+            const name = nameInput.value.trim();
+
+            if (!name) {
+                alert('선수 이름을 입력하세요!');
+                return;
+            }
+
+            if (currentRating === 0) {
+                alert('실력 평가(별점)를 선택하세요!');
+                return;
+            }
+
+            // 선수 추가
+            players.push({
+                number: players.length + 1,
+                name: name,
+                rating: currentRating
+            });
+
+            // 입력 필드 초기화
+            nameInput.value = '';
+            currentRating = 0;
+            const stars = document.querySelectorAll('#starRating .star');
+            stars.forEach(star => star.classList.remove('active'));
+
+            // 목록 업데이트
+            updatePlayersList();
+
+            console.log('선수 추가:', players);
+        }
+
+        function updatePlayersList() {
+            const playersList = document.getElementById('playersList');
+            const totalCount = document.getElementById('totalCount');
+            const nextBtn = document.getElementById('nextBtn');
+
+            if (players.length === 0) {
+                playersList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">아직 추가된 선수가 없습니다.</p>';
+                nextBtn.disabled = true;
+            } else {
+                playersList.innerHTML = players.map((player, index) => `
+                    <div class="player-item">
+                        <div class="player-info">
+                            <div class="player-number">${player.number}</div>
+                            <div class="player-name">${player.name}</div>
+                            <div class="player-stars">
+                                ${getStarsHTML(player.rating)}
+                            </div>
+                        </div>
+                        <button class="remove-btn" onclick="removePlayer(${index})">삭제</button>
+                    </div>
+                `).join('');
+
+                nextBtn.disabled = false;
+            }
+
+            totalCount.textContent = `(${players.length}명)`;
+        }
+
+        function getStarsHTML(rating) {
+            let html = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    html += '<span class="star active">★</span>';
+                } else {
+                    html += '<span class="star">★</span>';
+                }
+            }
+            return html;
+        }
+
+        function removePlayer(index) {
+            players.splice(index, 1);
+
+            // 번호 재정렬
+            players.forEach((player, idx) => {
+                player.number = idx + 1;
+            });
+
+            updatePlayersList();
+        }
+
+        function goToTeamSetup() {
+            if (players.length === 0) {
+                alert('최소 1명 이상의 선수를 추가하세요!');
+                return;
+            }
+
+            // 팀 개수 가져오기
+            const teamCount = parseInt(sessionStorage.getItem('futsalTeamCount')) || 2;
+
+            // 최소 선수 수 확인 (팀 개수만큼은 있어야 함)
+            if (players.length < teamCount) {
+                alert(`최소 ${teamCount}명 이상의 선수가 필요합니다!`);
+                return;
+            }
+
+            // 선수 데이터 저장 (일회용)
+            sessionStorage.setItem('futsalPlayers', JSON.stringify(players));
+
+            // 필드 플레이어 수 입력 페이지로 이동
+            location.href = 'futsal-auto-result.html';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>풋살 팀 선수 명단</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .teams-container {
+            display: grid;
+            gap: 30px;
+            padding: 40px 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .teams-container.count-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .teams-container.count-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .teams-container.count-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .team-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            border: 3px solid #ddd;
+        }
+
+        .team-box.team-a {
+            border-color: #ff6b6b;
+        }
+
+        .team-box.team-b {
+            border-color: #4ecdc4;
+        }
+
+        .team-box.team-c {
+            border-color: #ffe66d;
+        }
+
+        .team-box.team-d {
+            border-color: #a8dadc;
+        }
+
+        .team-header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            text-align: center;
+        }
+
+        .team-box.team-a .team-header {
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .team-box.team-b .team-header {
+            color: #4ecdc4;
+            border-color: #4ecdc4;
+        }
+
+        .team-box.team-c .team-header {
+            color: #d4a200;
+            border-color: #ffe66d;
+        }
+
+        .team-box.team-d .team-header {
+            color: #457b9d;
+            border-color: #a8dadc;
+        }
+
+        .players-list {
+            margin-bottom: 15px;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .player-number {
+            min-width: 30px;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .player-input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .player-input:focus {
+            outline: none;
+            border-color: #5ba83f;
+        }
+
+        .remove-player-btn {
+            padding: 8px 12px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .remove-player-btn:hover {
+            background-color: #ff5252;
+        }
+
+        .add-player-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #5ba83f;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .add-player-btn:hover {
+            background-color: #7bc34a;
+        }
+
+        .bottom-section {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .start-btn {
+            padding: 15px 60px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #2d5016;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .start-btn:hover {
+            background-color: #5ba83f;
+            box-shadow: 0 4px 12px rgba(91, 168, 63, 0.3);
+        }
+
+        .page-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            color: #2d5016;
+            margin-bottom: 10px;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 상단 메뉴 -->
+        <div class="top-menu">
+            <a href="index.html">메인</a>
+            <a href="futsal.html">뒤로가기</a>
+        </div>
+
+        <!-- 타이틀 -->
+        <div style="padding: 20px;">
+            <div class="page-title">선수 명단 입력</div>
+            <div class="page-subtitle">각 팀의 선수들을 입력하세요 (풋살: 5vs5)</div>
+        </div>
+
+        <!-- 팀 컨테이너 -->
+        <div class="teams-container" id="teamsContainer">
+            <!-- 팀들이 여기에 동적으로 생성됩니다 -->
+        </div>
+
+        <!-- 시작 버튼 -->
+        <div class="bottom-section">
+            <button class="start-btn" onclick="startGame()">경기 시작</button>
+        </div>
+    </div>
+
+    <script>
+        const teamNames = ['A팀', 'B팀', 'C팀', 'D팀'];
+        const teamClasses = ['team-a', 'team-b', 'team-c', 'team-d'];
+        let teamCount = 0;
+        let teams = [];
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            // 세션스토리지에서 팀 개수 가져오기
+            teamCount = parseInt(sessionStorage.getItem('futsalTeamCount')) || 2;
+            console.log('팀 개수:', teamCount);
+
+            // 팀 컨테이너 그리드 설정
+            const container = document.getElementById('teamsContainer');
+            container.className = `teams-container count-${teamCount}`;
+
+            // 팀 초기화
+            initializeTeams();
+        });
+
+        function initializeTeams() {
+            const container = document.getElementById('teamsContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < teamCount; i++) {
+                teams[i] = {
+                    name: teamNames[i],
+                    players: []
+                };
+
+                const teamBox = createTeamBox(i);
+                container.appendChild(teamBox);
+            }
+        }
+
+        function createTeamBox(teamIndex) {
+            const teamBox = document.createElement('div');
+            teamBox.className = `team-box ${teamClasses[teamIndex]}`;
+            teamBox.id = `team-${teamIndex}`;
+
+            teamBox.innerHTML = `
+                <div class="team-header">${teamNames[teamIndex]}</div>
+                <div class="players-list" id="players-${teamIndex}">
+                    <!-- 선수들이 여기에 추가됩니다 -->
+                </div>
+                <button class="add-player-btn" onclick="addPlayer(${teamIndex})">+ 선수 추가</button>
+            `;
+
+            return teamBox;
+        }
+
+        function addPlayer(teamIndex) {
+            const playersList = document.getElementById(`players-${teamIndex}`);
+            const playerCount = playersList.children.length + 1;
+
+            const playerRow = document.createElement('div');
+            playerRow.className = 'player-row';
+            playerRow.innerHTML = `
+                <div class="player-number">${playerCount}.</div>
+                <input type="text" class="player-input" placeholder="선수 이름 입력" data-team="${teamIndex}" data-number="${playerCount}">
+                <button class="remove-player-btn" onclick="removePlayer(this)">삭제</button>
+            `;
+
+            playersList.appendChild(playerRow);
+        }
+
+        function removePlayer(btn) {
+            const playerRow = btn.parentElement;
+            const playersList = playerRow.parentElement;
+            playerRow.remove();
+
+            // 번호 재정렬
+            const rows = playersList.querySelectorAll('.player-row');
+            rows.forEach((row, index) => {
+                const numberDiv = row.querySelector('.player-number');
+                const input = row.querySelector('.player-input');
+                numberDiv.textContent = `${index + 1}.`;
+                input.dataset.number = index + 1;
+            });
+        }
+
+        function startGame() {
+            // 모든 팀의 선수 데이터 수집
+            const allTeams = [];
+
+            for (let i = 0; i < teamCount; i++) {
+                const playersList = document.getElementById(`players-${i}`);
+                const inputs = playersList.querySelectorAll('.player-input');
+                const players = [];
+
+                inputs.forEach(input => {
+                    if (input.value.trim()) {
+                        players.push({
+                            number: parseInt(input.dataset.number),
+                            name: input.value.trim()
+                        });
+                    }
+                });
+
+                allTeams.push({
+                    name: teamNames[i],
+                    players: players
+                });
+            }
+
+            // 최소 1명 이상의 선수가 있는지 확인
+            const hasPlayers = allTeams.some(team => team.players.length > 0);
+            if (!hasPlayers) {
+                alert('최소 1개 팀에 1명 이상의 선수를 입력하세요!');
+                return;
+            }
+
+            console.log('팀 데이터:', allTeams);
+
+            // 세션스토리지에 저장 (일회용)
+            sessionStorage.setItem('futsalTeams', JSON.stringify(allTeams));
+
+            alert('경기 시작! (경기 화면은 추후 추가 예정입니다)');
+            // location.href = 'futsal-game.html'; // 추후 경기 화면으로 이동
+        }
+    </script>
+</body>
+</html>
