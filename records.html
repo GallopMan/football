@@ -376,31 +376,6 @@
             background: #ff5252;
         }
 
-        /* MOM 체크박스 */
-        .mom-checkbox {
-            display: none;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-
-        .stat-item.edit-mode .mom-checkbox {
-            display: flex;
-        }
-
-        .mom-checkbox input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .mom-checkbox label {
-            cursor: pointer;
-            color: var(--primary-green);
-            font-weight: 600;
-            font-size: 13px;
-        }
 
         /* 하단 버튼 */
         .footer-buttons {
@@ -439,6 +414,265 @@
             background: #ccc;
         }
 
+        /* 경기 전적 섹션 */
+        .match-records-section {
+            background: var(--white);
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .match-records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .match-records-header h3 {
+            color: var(--primary-green);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn-add-match {
+            padding: 8px 16px;
+            background: var(--field-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-add-match:hover {
+            background: var(--light-green);
+        }
+
+        .match-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            transition: all 0.3s;
+        }
+
+        .match-item.win {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .match-item.loss {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+
+        .match-item.draw {
+            background: #f5f5f5;
+            border-left-color: #9e9e9e;
+        }
+
+        .match-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .match-team-logo {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            margin-right: 10px;
+        }
+
+        .match-team-name {
+            flex: 1;
+            font-weight: 600;
+            color: var(--primary-green);
+            font-size: 14px;
+        }
+
+        .match-score {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-green);
+            margin: 0 15px;
+        }
+
+        .match-opponent {
+            flex: 1;
+            text-align: right;
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .match-date {
+            font-size: 12px;
+            color: #999;
+            margin-left: 15px;
+        }
+
+        .show-more-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: var(--gray-light);
+            border: 2px solid var(--gray-border);
+            border-radius: 6px;
+            color: var(--primary-green);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .show-more-btn:hover {
+            background: #e8f5e9;
+            border-color: var(--field-green);
+        }
+
+        /* 경기 추가 모달 */
+        .match-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .match-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .match-modal-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-green);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .match-form-group {
+            margin-bottom: 20px;
+        }
+
+        .match-form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary-green);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .match-form-input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .match-form-input:focus {
+            outline: none;
+            border-color: var(--field-green);
+        }
+
+        .score-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .score-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--field-green);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .score-btn:hover {
+            background: var(--light-green);
+            transform: scale(1.1);
+        }
+
+        .score-btn.minus {
+            background: var(--accent);
+        }
+
+        .score-btn.minus:hover {
+            background: #ff5252;
+        }
+
+        .score-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: var(--primary-green);
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .match-modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .match-modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-save-match {
+            background: var(--field-green);
+            color: white;
+        }
+
+        .btn-save-match:hover {
+            background: var(--light-green);
+        }
+
+        .btn-cancel-match {
+            background: #ddd;
+            color: #333;
+        }
+
+        .btn-cancel-match:hover {
+            background: #ccc;
+        }
+
         /* 메시지 */
         .success-message {
             display: none;
@@ -451,6 +685,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             animation: slideIn 0.3s ease-out;
+            z-index: 2000;
         }
 
         .no-team-message {
@@ -558,6 +793,20 @@
             <!-- 팀 정보가 여기에 표시됩니다 -->
         </div>
 
+        <!-- 경기 전적 -->
+        <div class="match-records-section" id="matchRecordsSection">
+            <div class="match-records-header">
+                <h3>⚽ 경기 전적</h3>
+                <button class="btn-add-match" onclick="openMatchModal()">+ 경기 추가</button>
+            </div>
+            <div class="match-list" id="matchList">
+                <!-- 경기 전적이 여기에 표시됩니다 -->
+            </div>
+            <button class="show-more-btn" id="showMoreBtn" onclick="toggleShowMore()" style="display: none;">
+                더보기
+            </button>
+        </div>
+
         <!-- 선수 기록 -->
         <div class="players-container" id="playersContainer">
             <!-- 선수들의 기록이 여기에 표시됩니다 -->
@@ -572,12 +821,55 @@
 
     <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
 
+    <!-- 경기 추가 모달 -->
+    <div id="matchModal" class="match-modal">
+        <div class="match-modal-content">
+            <div class="match-modal-header"> 경기 결과 입력</div>
+
+            <div class="match-form-group">
+                <label class="match-form-label">경기 날짜</label>
+                <input type="date" id="matchDate" class="match-form-input">
+            </div>
+
+            <div class="match-form-group">
+                <label class="match-form-label">상대 팀 이름</label>
+                <input type="text" id="opponentName" class="match-form-input" placeholder="상대 팀 이름을 입력하세요">
+            </div>
+
+            <div class="match-form-group">
+                <label class="match-form-label">우리 팀 득점</label>
+                <div class="score-control">
+                    <button class="score-btn minus" onclick="adjustScore('my', -1)">−</button>
+                    <div class="score-display" id="myScore">0</div>
+                    <button class="score-btn" onclick="adjustScore('my', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="match-form-group">
+                <label class="match-form-label">상대 팀 득점</label>
+                <div class="score-control">
+                    <button class="score-btn minus" onclick="adjustScore('opponent', -1)">−</button>
+                    <div class="score-display" id="opponentScore">0</div>
+                    <button class="score-btn" onclick="adjustScore('opponent', 1)">+</button>
+                </div>
+            </div>
+
+            <div class="match-modal-buttons">
+                <button class="btn-save-match" onclick="saveMatch()">저장</button>
+                <button class="btn-cancel-match" onclick="closeMatchModal()">취소</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let currentTeam = null;
         let isEditMode = false;
         let currentSeasonId = null;
-        let seasons = []; // { id, name, startDate, endDate, records: {} }
+        let seasons = []; // { id, name, startDate, endDate, records: {}, matches: [] }
         let tempRecords = {};
+        let myScore = 0;
+        let opponentScore = 0;
+        let showAllMatches = false;
 
         // 페이지 로드 시 초기화
         window.addEventListener('load', function() {
@@ -654,7 +946,8 @@
                 name: name,
                 startDate: startDate,
                 endDate: endDate,
-                records: records
+                records: records,
+                matches: []
             };
 
             seasons.push(newSeason);
@@ -736,6 +1029,7 @@
             if (!currentTeam) return;
 
             renderTeamInfo();
+            renderMatchRecords();
             renderPlayerRecords();
             renderSeasonsList();
         }
@@ -823,11 +1117,9 @@
                             <div class="stat-item" id="stat-mom-${player.id}">
                                 <div class="stat-label">MOM</div>
                                 <div class="stat-value" id="value-mom-${player.id}">${record.mom}</div>
-                                <div class="mom-checkbox">
-                                    <input type="checkbox" id="mom-${player.id}" 
-                                        onchange="toggleMOM(${player.id})" 
-                                        ${record.mom > 0 ? 'checked' : ''}>
-                                    <label for="mom-${player.id}">선정</label>
+                                <div class="stat-controls">
+                                    <button class="stat-btn minus" onclick="decrementStat(${player.id}, 'mom')">−</button>
+                                    <button class="stat-btn" onclick="incrementStat(${player.id}, 'mom')">+</button>
                                 </div>
                             </div>
                         </div>
@@ -864,7 +1156,7 @@
             document.getElementById(`value-${statType}-${playerId}`).textContent = value;
         }
 
-        // MOM 토글
+        // MOM 토글 (더 이상 사용하지 않지만 호환성을 위해 유지)
         function toggleMOM(playerId) {
             if (!tempRecords[playerId]) {
                 tempRecords[playerId] = { matches: 0, goals: 0, assists: 0, mom: 0 };
@@ -935,6 +1227,172 @@
         function goBack() {
             window.location.href = 'index.html';
         }
+
+        // === 경기 전적 관련 함수 ===
+
+        // 경기 추가 모달 열기
+        function openMatchModal() {
+            if (!currentSeasonId) {
+                alert('시즌을 먼저 선택해주세요.');
+                return;
+            }
+
+            myScore = 0;
+            opponentScore = 0;
+            document.getElementById('myScore').textContent = '0';
+            document.getElementById('opponentScore').textContent = '0';
+            document.getElementById('matchDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('opponentName').value = '';
+            document.getElementById('matchModal').style.display = 'block';
+        }
+
+        // 경기 추가 모달 닫기
+        function closeMatchModal() {
+            document.getElementById('matchModal').style.display = 'none';
+        }
+
+        // 점수 조정
+        function adjustScore(team, delta) {
+            if (team === 'my') {
+                myScore = Math.max(0, myScore + delta);
+                document.getElementById('myScore').textContent = myScore;
+            } else {
+                opponentScore = Math.max(0, opponentScore + delta);
+                document.getElementById('opponentScore').textContent = opponentScore;
+            }
+        }
+
+        // 경기 저장
+        function saveMatch() {
+            const matchDate = document.getElementById('matchDate').value;
+            const opponentName = document.getElementById('opponentName').value.trim();
+
+            if (!matchDate) {
+                alert('경기 날짜를 선택해주세요.');
+                return;
+            }
+
+            if (!opponentName) {
+                alert('상대 팀 이름을 입력해주세요.');
+                return;
+            }
+
+            const season = seasons.find(s => s.id === currentSeasonId);
+            if (!season) return;
+
+            if (!season.matches) {
+                season.matches = [];
+            }
+
+            const match = {
+                id: Date.now().toString(),
+                date: matchDate,
+                opponent: opponentName,
+                myScore: myScore,
+                opponentScore: opponentScore,
+                result: myScore > opponentScore ? 'win' : myScore < opponentScore ? 'loss' : 'draw'
+            };
+
+            season.matches.push(match);
+            localStorage.setItem('allSeasons', JSON.stringify(seasons));
+
+            closeMatchModal();
+            renderMatchRecords();
+
+            const message = document.getElementById('successMessage');
+            message.textContent = '경기가 저장되었습니다! ';
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 2000);
+        }
+
+        // 경기 전적 렌더링
+        function renderMatchRecords() {
+            const matchRecordsSection = document.getElementById('matchRecordsSection');
+            const matchList = document.getElementById('matchList');
+            const showMoreBtn = document.getElementById('showMoreBtn');
+
+            if (!currentSeasonId) {
+                matchList.innerHTML = '<p style="text-align: center; padding: 40px 20px; color: #999;">시즌을 선택하면 경기 전적을 관리할 수 있습니다.</p>';
+                showMoreBtn.style.display = 'none';
+                return;
+            }
+
+            const season = seasons.find(s => s.id === currentSeasonId);
+            if (!season || !season.matches || season.matches.length === 0) {
+                matchList.innerHTML = '<p style="text-align: center; padding: 40px 20px; color: #999;">아직 등록된 경기가 없습니다.<br>"+ 경기 추가" 버튼을 눌러 경기를 추가하세요.</p>';
+                showMoreBtn.style.display = 'none';
+                return;
+            }
+
+            // 팀 정보 가져오기
+            const teamInfo = localStorage.getItem('teamInfo');
+            let teamLogo = '';
+            let teamName = currentTeam ? currentTeam.teamName : '우리 팀';
+
+            if (teamInfo) {
+                const info = JSON.parse(teamInfo);
+                if (info.logo) {
+                    teamLogo = `<img src="${info.logo}" alt="팀 로고" class="match-team-logo">`;
+                }
+                if (info.teamName) {
+                    teamName = info.teamName;
+                }
+            }
+
+            // 최신순 정렬
+            const sortedMatches = [...season.matches].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            // 표시할 경기 수 결정
+            const displayMatches = showAllMatches ? sortedMatches : sortedMatches.slice(0, 5);
+
+            let html = '';
+            displayMatches.forEach(match => {
+                const date = new Date(match.date);
+                const matchDate = date.toLocaleDateString('ko-KR', {
+                    month: 'short',
+                    day: 'numeric',
+                    weekday: 'short'
+                });
+
+                html += `
+                    <div class="match-item ${match.result}">
+                        ${teamLogo}
+                        <div class="match-team-name">${teamName}</div>
+                        <div class="match-score">${match.myScore} : ${match.opponentScore}</div>
+                        <div class="match-opponent">${match.opponent}</div>
+                        <div class="match-date">${matchDate}</div>
+                    </div>
+                `;
+            });
+
+            matchList.innerHTML = html;
+
+            // 더보기 버튼 표시 여부
+            if (sortedMatches.length > 5) {
+                showMoreBtn.style.display = 'block';
+                showMoreBtn.textContent = showAllMatches ? '접기' : `더보기 (${sortedMatches.length - 5}개 더)`;
+            } else {
+                showMoreBtn.style.display = 'none';
+            }
+        }
+
+        // 더보기/접기 토글
+        function toggleShowMore() {
+            showAllMatches = !showAllMatches;
+            renderMatchRecords();
+        }
+
+        // 모달 외부 클릭 시 닫기
+        window.onclick = function(event) {
+            const matchModal = document.getElementById('matchModal');
+            if (event.target === matchModal) {
+                closeMatchModal();
+            }
+        };
     </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="auth.js"></script>
 </body>
 </html>

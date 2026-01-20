@@ -234,7 +234,7 @@
         <div class="top-menu">
             <a href="index.html">메인</a>
             <a href="records.html">기록실</a>
-            <a href="#">로그인</a>
+            <a href="login.html" class="login-link">로그인</a>
         </div>
 
         <div class="page-container">
@@ -315,6 +315,16 @@
                     </div>
                 </div>
 
+                <!-- 활동 지역 -->
+                <div class="form-section">
+                    <label class="form-label">활동 지역</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                        <input type="text" id="activityCity" class="form-input" placeholder="시 (예: 서울특별시)">
+                        <input type="text" id="activityDistrict" class="form-input" placeholder="구 (예: 강남구)">
+                    </div>
+                    <input type="text" id="activityDetail" class="form-input" placeholder="상세 장소 (예: OO체육공원, OO운동장)">
+                </div>
+
                 <!-- 저장 버튼 -->
                 <div class="save-section">
                     <button class="save-btn" onclick="saveTeamInfo()">저장하기</button>
@@ -354,6 +364,11 @@
                 document.getElementById('foundedDate').value = info.foundedDate || '';
                 document.getElementById('president').value = info.president || '';
                 document.getElementById('vicePresident').value = info.vicePresident || '';
+
+                // 활동 지역
+                document.getElementById('activityCity').value = info.activityCity || '';
+                document.getElementById('activityDistrict').value = info.activityDistrict || '';
+                document.getElementById('activityDetail').value = info.activityDetail || '';
 
                 // 나이대
                 if (info.ageGroup) {
@@ -453,6 +468,9 @@
                 ageGroup: selectedAge,
                 teamType: selectedType,
                 rating: selectedRating,
+                activityCity: document.getElementById('activityCity').value.trim(),
+                activityDistrict: document.getElementById('activityDistrict').value.trim(),
+                activityDetail: document.getElementById('activityDetail').value.trim(),
                 updatedDate: new Date().toISOString()
             };
 
@@ -471,5 +489,7 @@
             console.log('팀 정보 저장:', teamInfo);
         }
     </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="auth.js"></script>
 </body>
 </html>

@@ -141,21 +141,248 @@
             position: relative;
             width: 100%;
             max-width: 500px;
-            aspect-ratio: 3/4;
-            background: linear-gradient(180deg, #5ba83f 0%, #7bc34a 50%, #5ba83f 100%);
-            border: 3px solid var(--primary-green);
-            border-radius: 8px;
+            aspect-ratio: 2/3;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    #4a9a3f 0px,
+                    #4a9a3f 40px,
+                    #5ba83f 40px,
+                    #5ba83f 80px
+                );
+            border: 3px solid white;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .field-lines {
             position: absolute;
             width: 100%;
             height: 100%;
-            background-image:
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 133'%3E%3Cpath d='M50 0 L50 133' stroke='white' stroke-width='0.5' /%3E%3Cpath d='M0 66.5 L100 66.5' stroke='white' stroke-width='0.5' /%3E%3Ccircle cx='50' cy='66.5' r='8' fill='none' stroke='white' stroke-width='0.5' /%3E%3Ccircle cx='50' cy='66.5' r='0.5' fill='white' /%3E%3Crect x='15' y='8' width='70' height='50' fill='none' stroke='white' stroke-width='0.5' /%3E%3Crect x='15' y='75' width='70' height='50' fill='none' stroke='white' stroke-width='0.5' /%3E%3Ccircle cx='50' cy='15' r='4' fill='none' stroke='white' stroke-width='0.3' /%3E%3Ccircle cx='50' cy='118' r='4' fill='none' stroke='white' stroke-width='0.3' /%3E%3C/svg%3E");
-            background-size: 100% 100%;
             pointer-events: none;
+        }
+
+        /* 외곽 테두리 */
+        .field-lines::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid white;
+            box-sizing: border-box;
+        }
+
+        /* 하프 라인 */
+        .field-lines::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: white;
+        }
+
+        /* 센터 서클 */
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20%;
+            aspect-ratio: 1;
+            border: 2px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 센터 점 */
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 페널티 박스 (상단) */
+        .penalty-box-top {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52%;
+            height: 22%;
+            border: 2px solid white;
+            border-top: none;
+        }
+
+        /* 골 에리어 (상단) */
+        .goal-box-top {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24%;
+            height: 9%;
+            border: 2px solid white;
+            border-top: none;
+        }
+
+        /* 페널티 아크 (상단) */
+        .penalty-arc-top {
+            position: absolute;
+            top: 22%;
+            left: 50%;
+            width: 20%;
+            height: 10%;
+            border: 2px solid white;
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
+            border-bottom: none;
+            transform: translateX(-50%);
+        }
+
+        /* 페널티 점 (상단) */
+        .penalty-spot-top {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 페널티 박스 (하단) */
+        .penalty-box-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 52%;
+            height: 22%;
+            border: 2px solid white;
+            border-bottom: none;
+        }
+
+        /* 골 에리어 (하단) */
+        .goal-box-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24%;
+            height: 9%;
+            border: 2px solid white;
+            border-bottom: none;
+        }
+
+        /* 페널티 아크 (하단) */
+        .penalty-arc-bottom {
+            position: absolute;
+            bottom: 22%;
+            left: 50%;
+            width: 20%;
+            height: 10%;
+            border: 2px solid white;
+            border-bottom-left-radius: 50%;
+            border-bottom-right-radius: 50%;
+            border-top: none;
+            transform: translateX(-50%);
+        }
+
+        /* 페널티 점 (하단) */
+        .penalty-spot-bottom {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 코너 아크 (좌상단) */
+        .corner-arc-tl {
+            position: absolute;
+            top: -3%;
+            left: -3%;
+            width: 6%;
+            aspect-ratio: 1;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-top: none;
+            border-left: none;
+        }
+
+        /* 코너 아크 (우상단) */
+        .corner-arc-tr {
+            position: absolute;
+            top: -3%;
+            right: -3%;
+            width: 6%;
+            aspect-ratio: 1;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-top: none;
+            border-right: none;
+        }
+
+        /* 코너 아크 (좌하단) */
+        .corner-arc-bl {
+            position: absolute;
+            bottom: -3%;
+            left: -3%;
+            width: 6%;
+            aspect-ratio: 1;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-bottom: none;
+            border-left: none;
+        }
+
+        /* 코너 아크 (우하단) */
+        .corner-arc-br {
+            position: absolute;
+            bottom: -3%;
+            right: -3%;
+            width: 6%;
+            aspect-ratio: 1;
+            border: 2px solid white;
+            border-radius: 50%;
+            border-bottom: none;
+            border-right: none;
+        }
+
+        /* 골대 (상단) */
+        .goal-top {
+            position: absolute;
+            top: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15%;
+            height: 3px;
+            background: white;
+            z-index: 5;
+        }
+
+        /* 골대 (하단) */
+        .goal-bottom {
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15%;
+            height: 3px;
+            background: white;
+            z-index: 5;
         }
 
         .player-circle {
@@ -340,7 +567,31 @@
             <!-- 중앙: 축구장 -->
             <div class="field-section">
                 <div class="soccer-field" id="soccerField">
-                    <div class="field-lines"></div>
+                    <div class="field-lines">
+                        <!-- 센터 서클과 점 -->
+                        <div class="center-circle"></div>
+                        <div class="center-dot"></div>
+
+                        <!-- 상단 페널티 구역 -->
+                        <div class="penalty-box-top"></div>
+                        <div class="goal-box-top"></div>
+                        <div class="penalty-arc-top"></div>
+                        <div class="penalty-spot-top"></div>
+                        <div class="goal-top"></div>
+
+                        <!-- 하단 페널티 구역 -->
+                        <div class="penalty-box-bottom"></div>
+                        <div class="goal-box-bottom"></div>
+                        <div class="penalty-arc-bottom"></div>
+                        <div class="penalty-spot-bottom"></div>
+                        <div class="goal-bottom"></div>
+
+                        <!-- 코너 아크 -->
+                        <div class="corner-arc-tl"></div>
+                        <div class="corner-arc-tr"></div>
+                        <div class="corner-arc-bl"></div>
+                        <div class="corner-arc-br"></div>
+                    </div>
                     <!-- 선수 원형이 여기에 표시됩니다 -->
                 </div>
             </div>
