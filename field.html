@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>축구 팀 배치도</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <style>
         * {
             margin: 0;
@@ -583,9 +584,32 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* === gm light theme overrides === */
+        body { --gm-bg: url('assets/bg-field.png'); background: #fff !important; }
+        .container { padding-top: 80px; }
+        .header h1 { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .team-name-display { color: var(--gm-blue) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.1em; }
+        .players-list-section, .field-section, .sub-section { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; }
+        .players-list-section h3, .sub-section h3 { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .btn { font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; border-radius:8px !important; }
+        .save-btn { background:#f5f5f5 !important; color:#1a1a1a !important; border:none !important; box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .save-btn:hover { background:#e0e0e0 !important; box-shadow:0 8px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .reset-btn { background:#fff !important; color:var(--gm-ink) !important; border:none !important; box-shadow:0 3px 10px rgba(0,0,0,0.12) !important; }
+        .reset-btn:hover { background:#f5f7fb !important; }
+        .success-message { background: var(--gm-ink) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.15em; }
     </style>
 </head>
 <body>
+    <nav class="gm-nav">
+        <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
+        <div class="gm-nav-links">
+            <a href="records.html">Records</a>
+            <a href="team.html">My Team</a>
+            <a href="team-info.html">Edit Team</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
     <div class="container">
         <!-- 헤더 -->
         <div class="header">
@@ -654,7 +678,7 @@
         </div>
     </div>
 
-    <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
+    <div class="success-message" id="successMessage">저장되었습니다</div>
 
     <script src="field.js"></script>
 </body>

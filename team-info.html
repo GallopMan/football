@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>팀 정보 수정</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <style>
         .page-container {
             max-width: 800px;
@@ -212,6 +213,23 @@
             background-color: #ccc;
         }
 
+        .delete-team-btn {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 15px;
+        }
+
+        .delete-team-btn:hover {
+            background-color: #d32f2f;
+        }
+
         .success-message {
             display: none;
             position: fixed;
@@ -236,14 +254,46 @@
                 opacity: 1;
             }
         }
+
+        /* === gm light theme overrides === */
+        body { --gm-bg: url('assets/bg-team.png'); }
+        .page-container { padding-top: 100px !important; }
+        .page-title { color: var(--gm-ink) !important; font-family: 'Archivo Black','Pretendard',sans-serif !important; }
+        .page-subtitle { font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; color: var(--gm-muted) !important; font-size:11px !important; }
+        .info-form { background:#fff !important; border-radius:16px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; }
+        .form-label { color: var(--gm-ink) !important; font-family:'Space Mono',monospace !important; font-size:11px !important; letter-spacing:0.15em; text-transform:uppercase; }
+        .form-input { border:1px solid var(--gm-line-strong) !important; border-radius:8px !important; }
+        .form-input:focus { border-color: var(--gm-blue) !important; box-shadow:0 0 0 3px rgba(28,109,255,0.10) !important; }
+        .file-input-label, .save-btn {
+            background:#f5f5f5 !important; color:#1a1a1a !important; border:none !important; border-radius:8px !important;
+            font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.12em;
+            box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+        }
+        .file-input-label:hover, .save-btn:hover { background:#e0e0e0 !important; color:#1a1a1a !important; box-shadow:0 8px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .select-btn { border:none !important; background:#f5f7fb !important; color:var(--gm-ink) !important; border-radius:8px !important; font-family:'Space Mono',monospace !important; letter-spacing:0.08em; box-shadow:0 2px 8px rgba(0,0,0,0.06) !important; }
+        .select-btn:hover { background:#eaf0fa !important; }
+        .select-btn.active { background: #d8d8d8 !important; color:#1a1a1a !important; box-shadow:0 4px 12px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .star.active, .star:hover { color:#f0a925 !important; }
+        .cancel-btn { background:#fff !important; color:var(--gm-ink) !important; border:none !important; border-radius:8px !important; box-shadow:0 3px 10px rgba(0,0,0,0.12) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.12em; }
+        .cancel-btn:hover { background:#f5f7fb !important; }
+        .delete-team-btn { background:rgba(255,80,80,0.10) !important; color:#d93636 !important; border:none !important; border-radius:8px !important; box-shadow:0 3px 10px rgba(255,80,80,0.15) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.12em; }
+        .delete-team-btn:hover { background:rgba(255,80,80,0.20) !important; }
+        .logo-preview { border:2px dashed var(--gm-line-strong) !important; background:#f7f9fc !important; border-radius:12px !important; }
+        .success-message { background: var(--gm-ink) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.15em; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- 뒤로가기 -->
-        <div style="position:fixed; top:16px; right:20px; z-index:100;">
-            <a href="index.html" style="padding:8px 18px; background:#ddd; color:#333; border-radius:6px; text-decoration:none; font-size:14px; font-weight:600;">← 뒤로가기</a>
+    <nav class="gm-nav">
+        <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
+        <div class="gm-nav-links">
+            <a href="records.html">Records</a>
+            <a href="team.html">My Team</a>
+            <a href="team-info.html" class="active">Edit Team</a>
+            <a href="login.html">Login</a>
         </div>
+    </nav>
+    <div class="container">
+
 
         <div class="page-container">
             <!-- 헤더 -->
@@ -337,12 +387,13 @@
                 <div class="save-section">
                     <button class="save-btn" onclick="saveTeamInfo()">저장하기</button>
                     <button class="cancel-btn" onclick="location.href='index.html'">취소</button>
+                    <button class="delete-team-btn" onclick="deleteTeam()">팀 삭제</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
+    <div class="success-message" id="successMessage">저장되었습니다</div>
 
     <script>
         let selectedAge = '';
@@ -495,6 +546,13 @@
             }, 1500);
 
             console.log('팀 정보 저장:', teamInfo);
+        }
+
+        function deleteTeam() {
+            if (!confirm('팀을 삭제하시겠습니까?\n기록(시즌/경기)은 유지됩니다.')) return;
+            localStorage.removeItem('teamSetup');
+            localStorage.removeItem('teamInfo');
+            location.href = 'index.html';
         }
     </script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>

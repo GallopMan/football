@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>풋살 팀 선수 명단</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <style>
         .teams-container {
             display: grid;
@@ -242,9 +243,43 @@
             border-radius: 6px;
             min-height: 40px;
         }
+
+        /* === gm light theme overrides === */
+        body { --gm-bg: url('assets/bg-futsal.png'); }
+        .top-menu { display:none !important; }
+        .container { padding-top:70px; }
+        .page-title { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .page-subtitle { color: var(--gm-muted) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; font-size:11px !important; }
+        .team-box { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; border-width:0 !important; border-top:3px solid #ddd !important; }
+        .team-box.team-a { border-top-color:#ff6b6b !important; }
+        .team-box.team-b { border-top-color:#4ecdc4 !important; }
+        .team-box.team-c { border-top-color:#f0a925 !important; }
+        .team-box.team-d { border-top-color:#5b9bff !important; }
+        .team-header { font-family:'Archivo Black',sans-serif !important; }
+        .player-input { border:1px solid var(--gm-line-strong) !important; border-radius:8px !important; }
+        .player-input:focus { border-color: var(--gm-blue) !important; }
+        .player-number { font-family:'Space Mono',monospace !important; color:var(--gm-muted) !important; }
+        .add-player-btn, .start-btn { background:#f5f5f5 !important; color:#1a1a1a !important; border:none !important; border-radius:8px !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .add-player-btn:hover, .start-btn:hover { background:#e0e0e0 !important; color:#1a1a1a !important; box-shadow:0 8px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .remove-player-btn { background:rgba(255,80,80,0.12) !important; color:#d93636 !important; }
+        .remove-player-btn:hover { background:rgba(255,80,80,0.24) !important; }
+        .roster-panel { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; top:90px; }
+        .roster-title { color:var(--gm-ink) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; font-size:11px !important; border-bottom:1px solid var(--gm-line-strong) !important; }
+        .roster-player { background:#f5f7fb !important; border-left:3px solid var(--gm-blue) !important; border-radius:8px !important; }
+        .roster-player:hover { background:#eaf0fa !important; }
+        .players-list.drag-over { outline:2px dashed var(--gm-blue) !important; background:#eaf0fa !important; }
     </style>
 </head>
 <body>
+    <nav class="gm-nav">
+        <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
+        <div class="gm-nav-links">
+            <a href="records.html">Records</a>
+            <a href="team.html">My Team</a>
+            <a href="team-info.html">Edit Team</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
     <div class="container">
         <!-- 상단 메뉴 -->
         <div class="top-menu">
@@ -261,7 +296,7 @@
         <!-- 레이아웃 -->
         <div class="main-layout">
             <div class="roster-panel" id="rosterPanel">
-                <div class="roster-title">🏃 기존 팀 선수</div>
+                <div class="roster-title">기존 팀 선수</div>
                 <div id="rosterList"><p style="color:#999;font-size:12px;text-align:center">팀 데이터 없음</p></div>
             </div>
             <div class="teams-wrapper">

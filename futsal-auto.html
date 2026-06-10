@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>선수 실력 평가</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <style>
         .page-header {
             text-align: center;
@@ -297,9 +298,46 @@
 
         /* 별점 클릭 가능 */
         .player-stars .star { cursor: pointer; font-size: 18px; }
+
+        /* === gm light theme overrides === */
+        body { --gm-bg: url('assets/bg-futsal.png'); }
+        .top-menu { display:none !important; }
+        .container { padding-top:70px; }
+        .page-header { background:transparent !important; }
+        .page-title { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .page-subtitle { color: var(--gm-muted) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; font-size:11px !important; }
+        .add-player-section, .players-list, .roster-panel { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; }
+        .roster-panel { top:90px; }
+        .add-player-title, .players-list-title, .roster-title { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .players-list-title, .roster-title { border-bottom:1px solid var(--gm-line-strong) !important; }
+        .player-name-input { border:1px solid var(--gm-line-strong) !important; border-radius:8px !important; }
+        .player-name-input:focus { border-color: var(--gm-blue) !important; }
+        .star.active, .star:hover { color:#f0a925 !important; }
+        .add-player-btn, .next-btn { background:#f5f5f5 !important; color:#1a1a1a !important; border:none !important; border-radius:8px !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .add-player-btn:hover, .next-btn:hover { background:#e0e0e0 !important; color:#1a1a1a !important; box-shadow:0 8px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .next-btn:disabled { background:#dfe3ea !important; color:#aab !important; box-shadow:none !important; }
+        .player-item { background:#f7f9fc !important; border-left:4px solid var(--gm-blue) !important; border-radius:8px !important; }
+        .player-number { background: var(--gm-ink) !important; font-family:'Archivo Black',sans-serif !important; }
+        .player-name { color: var(--gm-ink) !important; }
+        .remove-btn { background:rgba(255,80,80,0.12) !important; color:#d93636 !important; }
+        .remove-btn:hover { background:rgba(255,80,80,0.24) !important; }
+        .roster-player { background:#f5f7fb !important; border-left:3px solid var(--gm-blue) !important; border-radius:8px !important; }
+        .roster-player:hover { background:#eaf0fa !important; }
+        #playersList.drag-over { outline:2px dashed var(--gm-blue) !important; background:#eaf0fa !important; }
+        .star-rating-label { font-family:'Space Mono',monospace !important; color:var(--gm-muted) !important; }
+        .total-count { color:var(--gm-muted) !important; }
     </style>
 </head>
 <body>
+    <nav class="gm-nav">
+        <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
+        <div class="gm-nav-links">
+            <a href="records.html">Records</a>
+            <a href="team.html">My Team</a>
+            <a href="team-info.html">Edit Team</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
     <div class="container">
         <!-- 상단 메뉴 -->
         <div class="top-menu">
@@ -316,7 +354,7 @@
         <!-- 레이아웃 -->
         <div class="page-layout">
         <div class="roster-panel" id="rosterPanel">
-            <div class="roster-title">🏃 기존 팀 선수</div>
+            <div class="roster-title">기존 팀 선수</div>
             <div id="rosterList"><p style="color:#999;font-size:12px;text-align:center">팀 데이터 없음</p></div>
         </div>
 

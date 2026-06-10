@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로그인 - 팀 매니저</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         .login-container {
@@ -152,6 +153,29 @@
             font-weight: bold;
             margin-right: 8px;
         }
+
+        /* === gm light theme overrides === */
+        .login-container {
+            background-image: url('ChatGPT Image 2026년 3월 2일 오후 08_04_19.png') !important;
+        }
+        .login-box {
+            background:#fff !important;
+            border-radius:20px !important;
+            border:1px solid rgba(255,255,255,0.8) !important;
+            box-shadow:0 24px 70px rgba(0,20,70,0.28) !important;
+        }
+        .login-title { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .login-subtitle, .info-text { color: var(--gm-muted) !important; }
+        .login-subtitle { font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; font-size:11px !important; }
+        .back-link { color: var(--gm-blue) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; font-size:12px; }
+        .back-link:hover { color: var(--gm-ink) !important; }
+        .features-list { background:#f5f7fb !important; border-radius:12px !important; }
+        .features-list h3 { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; font-size:13px !important; }
+        .features-list li { color: var(--gm-ink-soft) !important; }
+        .features-list li::before { color: var(--gm-blue) !important; }
+        .divider { color: var(--gm-muted) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.1em; font-size:11px; }
+        .manual-login-btn { background: var(--gm-blue) !important; border-radius:8px !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; }
+        .manual-login-btn:hover { background:#4d8aff !important; }
     </style>
 </head>
 <body>

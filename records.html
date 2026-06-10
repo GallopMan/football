@@ -7,9 +7,11 @@
     <!-- Google Fonts: Oswald, Didact Gothic, Poppins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Didact+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Didact+Gothic&family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     <!-- html2canvas 라이브러리 (이미지 저장용) -->
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <style>
         * {
             margin: 0;
@@ -28,14 +30,7 @@
             --accent: #ff6b6b;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background:
-                linear-gradient(rgba(255,255,255,0.75), rgba(255,255,255,0.75)),
-                url("ChatGPT Image 2026년 3월 3일 오전 12_58_50.png") center / cover fixed;
-            min-height: 100vh;
-            padding: 20px;
-        }
+
 
         .container {
             max-width: 1000px;
@@ -1631,14 +1626,253 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ============================================================
+           === g-Manager THEME (page-specific overrides) =
+           ============================================================ */
+        :root {
+            --gm-accent: #f5f5f5;
+            --gm-accent-hover: #e0e0e0;
+        }
+        body { --gm-bg: url('assets/bg-records.png'); }
+        .container { max-width: 1100px; padding-top: 80px; }
+
+        /* === cards (white on hero background) === */
+        .header,
+        .season-section,
+        .team-selector,
+        .match-records-section,
+        .players-section {
+            background: #ffffff !important;
+            border: 1px solid rgba(10, 20, 50, 0.06) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 6px 15px rgba(0, 10, 40, 0.09) !important;
+            color: var(--gm-ink);
+        }
+
+        /* === headings === */
+        .header h1 {
+            font-family: 'Archivo Black', 'Pretendard', sans-serif !important;
+            font-weight: 900 !important;
+            color: var(--gm-ink) !important;
+        }
+        .season-section h3,
+        .match-records-header h3 {
+            font-family: 'Archivo Black', 'Pretendard', sans-serif !important;
+            color: var(--gm-ink) !important;
+        }
+        .seasons-list h4,
+        .players-section-title {
+            font-family: 'Space Mono', monospace !important;
+            font-size: 11px !important;
+            letter-spacing: 0.22em !important;
+            text-transform: uppercase !important;
+            color: var(--gm-muted) !important;
+            font-weight: 700 !important;
+        }
+        .season-title-display {
+            font-family: 'Space Mono', monospace !important;
+            color: var(--gm-accent) !important;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        /* === buttons === */
+        .btn, .btn-large, .btn-add-match, .btn-create-season,
+        .show-more-btn, .show-more-players-btn, .image-upload-btn,
+        .layout-btn, .font-btn, .opponent-logo-btn,
+        .match-detail-buttons button, .match-modal-buttons button {
+            font-family: 'Space Mono', monospace !important;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+        .btn-back, .btn-edit, .btn-cancel-large, .btn-cancel-match, .btn-close-detail {
+            background: #f5f7fb !important;
+            color: var(--gm-ink) !important;
+            border: none !important;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255,255,255,0.7) !important;
+        }
+        .btn-back:hover, .btn-edit:hover,
+        .btn-cancel-large:hover, .btn-cancel-match:hover, .btn-close-detail:hover { background: #eaeef5 !important; box-shadow: 0 5px 14px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255,255,255,0.7) !important; }
+        .btn-edit.active {
+            background: var(--gm-accent) !important;
+            color: #fff !important;
+            border: none !important;
+        }
+        .btn-create-season, .btn-add-match, .btn-save-large, .btn-save-match {
+            background: var(--gm-accent) !important;
+            color: #1a1a1a !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+        }
+        .btn-create-season:hover, .btn-add-match:hover,
+        .btn-save-large:hover, .btn-save-match:hover {
+            background: var(--gm-accent-hover) !important;
+            color: #1a1a1a !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+        }
+        .btn-create-season, .btn-add-match, .btn-save-large, .btn-save-match,
+        .btn, .btn-large, .show-more-btn, .show-more-players-btn {
+            border: none !important;
+        }
+
+        /* === inputs === */
+        .season-input-group label, .match-form-label {
+            font-family: 'Space Mono', monospace !important;
+            font-size: 10px !important;
+            letter-spacing: 0.22em !important;
+            text-transform: uppercase;
+            color: var(--gm-muted) !important;
+            font-weight: 700 !important;
+        }
+        .season-input-group input, .match-form-input {
+            background: #ffffff !important;
+            border: 1px solid var(--gm-line-strong) !important;
+            color: var(--gm-ink) !important;
+            border-radius: 8px !important;
+            font-family: 'Archivo', sans-serif !important;
+        }
+        .season-input-group input::placeholder, .match-form-input::placeholder { color: rgba(10,10,10,0.32) !important; }
+        .season-input-group input:focus, .match-form-input:focus {
+            border-color: var(--gm-accent) !important;
+            box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.08) !important;
+        }
+
+        /* === list rows === */
+        .season-item {
+            background: #f7f9fc !important;
+            border: 1px solid var(--gm-line) !important;
+            border-radius: 10px !important;
+            color: var(--gm-ink);
+        }
+        .season-item:hover {
+            background: #eaf0fa !important;
+            border-color: rgba(28, 109, 255, 0.30) !important;
+        }
+        .season-item.active {
+            background: rgba(10, 10, 10, 0.06) !important;
+            border-color: rgba(10, 10, 10, 0.25) !important;
+        }
+        .season-item-name { font-family: 'Archivo Black', sans-serif !important; color: var(--gm-ink) !important; }
+        .season-item.active .season-item-name { color: var(--gm-accent) !important; }
+        .season-item-date { font-family: 'Space Mono', monospace !important; color: var(--gm-muted) !important; }
+        .btn-delete { background: rgba(255, 80, 80, 0.12) !important; color: #d93636 !important; border: none !important; }
+        .btn-delete:hover { background: rgba(255, 80, 80, 0.22) !important; }
+
+        .team-info-display { background: #f7f9fc !important; border: 1px solid var(--gm-line) !important; border-radius: 10px; padding: 18px !important; }
+        .team-info-display h2 { font-family: 'Archivo Black', sans-serif !important; color: var(--gm-ink) !important; }
+        .team-info-display p { color: var(--gm-ink-soft) !important; }
+        .team-logo-area { background: #ffffff !important; border: 1px solid var(--gm-line); }
+        .team-logo-placeholder { color: var(--gm-muted) !important; }
+
+        .match-summary { background: #f7f9fc !important; border: 1px solid var(--gm-line) !important; color: var(--gm-ink); }
+        .summary-season, .summary-stat { color: var(--gm-ink) !important; }
+        .summary-stat small { color: var(--gm-muted) !important; }
+
+        .match-item { background: #f7f9fc !important; border-left-width: 3px; color: var(--gm-ink); }
+        .match-item.win { background: rgba(28, 109, 255, 0.07) !important; border-left-color: var(--gm-blue) !important; }
+        .match-item.loss { background: rgba(255, 80, 80, 0.07) !important; border-left-color: #ff5b5b !important; }
+        .match-item.draw { background: #f5f5f5 !important; border-left-color: rgba(10,10,10,0.25) !important; }
+        .match-item:hover { background: #eaf0fa !important; }
+        .match-team-name, .match-score { color: var(--gm-ink) !important; }
+        .match-score { font-family: 'Archivo Black', sans-serif !important; }
+        .match-opponent { color: var(--gm-ink-soft) !important; }
+        .match-date { font-family: 'Space Mono', monospace !important; color: var(--gm-muted) !important; }
+        .match-team-logo { border-color: var(--gm-line-strong) !important; background: #ffffff !important; }
+
+        /* === player records table === */
+        .players-table thead th {
+            background: #f5f7fb !important;
+            color: var(--gm-muted) !important;
+            font-family: 'Space Mono', monospace !important;
+            letter-spacing: 0.18em !important;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--gm-line-strong) !important;
+        }
+        .players-table th.col-sortable:hover { background: #eaeef5 !important; color: var(--gm-ink) !important; }
+        .player-row td { border-bottom: 1px solid var(--gm-line) !important; color: var(--gm-ink); }
+        .player-row:nth-child(even) { background: #fafbfc !important; }
+        .player-row:hover { background: rgba(28, 109, 255, 0.06) !important; }
+        .name-cell { color: var(--gm-ink) !important; font-family: 'Archivo Black', sans-serif !important; }
+        .rank-cell { color: var(--gm-muted) !important; font-family: 'Space Mono', monospace !important; }
+        .rank-cell.rank-1 { color: #d4a017 !important; }
+        .rank-cell.rank-2 { color: #9e9e9e !important; }
+        .rank-cell.rank-3 { color: #b87333 !important; }
+        .stat-inner .stat-value { color: var(--gm-ink) !important; font-family: 'Space Mono', monospace !important; }
+        .stat-label { color: var(--gm-muted) !important; }
+        .row-edit-btn { color: var(--gm-muted) !important; }
+        .row-edit-btn:hover { background: #f5f7fb !important; color: var(--gm-accent) !important; }
+        .row-edit-btn.editing { background: rgba(10, 10, 10, 0.07) !important; color: var(--gm-accent) !important; }
+        .player-row.editing-row { background: rgba(10, 10, 10, 0.04) !important; }
+        .players-table .stat-item.edit-mode {
+            background: rgba(10, 10, 10, 0.05) !important;
+            border-color: rgba(10, 10, 10, 0.20) !important;
+        }
+
+        .player-card { background: #ffffff !important; border: 1px solid var(--gm-line) !important; }
+        .player-header { border-bottom-color: var(--gm-line) !important; }
+        .player-number { background: var(--gm-accent) !important; font-family: 'Archivo Black', sans-serif !important; }
+        .player-name { color: var(--gm-ink) !important; font-family: 'Archivo Black', sans-serif !important; }
+        .stat-item { background: #f7f9fc !important; border-color: var(--gm-line) !important; }
+        .stat-value { color: var(--gm-ink) !important; }
+
+        /* === modals === */
+        .match-detail-modal, .match-modal { background-color: rgba(2, 6, 15, 0.55) !important; backdrop-filter: blur(8px); }
+        .match-detail-content, .match-modal-content {
+            background: #ffffff !important;
+            border: 1px solid var(--gm-line) !important;
+            border-radius: 16px !important;
+            color: var(--gm-ink) !important;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.35) !important;
+        }
+        .match-detail-header, .match-modal-header { font-family: 'Archivo Black', sans-serif !important; color: var(--gm-ink) !important; }
+
+        .image-upload-btn { background: #f7f9fc !important; border: 1px dashed var(--gm-line-strong) !important; color: var(--gm-ink-soft) !important; }
+        .image-upload-btn:hover { background: #eaf0fa !important; border-color: var(--gm-blue) !important; color: var(--gm-ink) !important; }
+        .layout-toggle-label, .color-toggle-label, .font-toggle-label {
+            font-family: 'Space Mono', monospace !important;
+            font-size: 10px !important;
+            letter-spacing: 0.18em !important;
+            text-transform: uppercase;
+            color: var(--gm-muted) !important;
+        }
+        .layout-btn, .font-btn { background: #ffffff !important; border: none !important; color: var(--gm-ink-soft) !important; }
+        .layout-btn:hover, .font-btn:hover { background: #eaf0fa !important; color: var(--gm-ink) !important; }
+        .layout-btn.active, .font-btn.active { background: var(--gm-accent) !important; border: none !important; color: #1a1a1a !important; }
+        .opponent-logo-btn { background: rgba(10, 10, 10, 0.04) !important; border: 1px dashed rgba(10, 10, 10, 0.25) !important; color: var(--gm-accent) !important; }
+        .opponent-logo-btn:hover { background: rgba(10, 10, 10, 0.08) !important; border-color: var(--gm-accent) !important; }
+        .color-btn.active { border-color: var(--gm-accent) !important; box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.15) !important; }
+        .score-btn { background: var(--gm-blue) !important; font-family: 'Archivo Black', sans-serif !important; }
+        .score-btn:hover { background: #4d8aff !important; }
+        .score-btn.minus { background: #ff5b5b !important; }
+        .score-btn.minus:hover { background: #ff7878 !important; }
+        .score-display { color: var(--gm-ink) !important; font-family: 'Archivo Black', sans-serif !important; }
+
+        .success-message { background: var(--gm-accent) !important; font-family: 'Space Mono', monospace !important; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+        .no-team-message { color: #6b6b6b !important; }
+        .no-team-message a { background: var(--gm-accent) !important; font-family: 'Space Mono', monospace !important; text-transform: uppercase; letter-spacing: 0.15em; }
+        .no-team-message a:hover { background: #d8d8d8 !important; }
+
     </style>
 </head>
 <body>
+    <!-- top nav (shared with index) -->
+    <nav class="gm-nav">
+        <a href="index.html" class="gm-nav-logo">
+            <img src="logo.png" alt="g-Manager" />
+        </a>
+        <div class="gm-nav-links">
+            <a href="records.html" class="active">Records</a>
+            <a href="team.html">My Team</a>
+            <a href="team-info.html">Edit Team</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
     <div class="container">
         <!-- 헤더 -->
-        <div class="header">
+        <div class="header" style="background-color: rgb(237, 246, 255)">
             <div class="header-left">
-                <h1>📊 기록실</h1>
+                <h1>기록실</h1>
                 <span class="season-title-display" id="seasonTitleDisplay"></span>
             </div>
             <div class="header-buttons">
@@ -1648,7 +1882,7 @@
 
         <!-- 시즌 선택 섹션 -->
         <div class="season-section">
-            <h3>📅 시즌 관리</h3>
+            <h3>시즌 관리</h3>
             
             <div class="season-grid">
                 <div class="season-input-group">
@@ -1666,7 +1900,7 @@
             </div>
 
             <div class="season-buttons">
-                <button class="btn-create-season" onclick="createSeason()">시즌 생성</button>
+                <button class="btn-create-season" onclick="createSeason()" style="background-color: rgb(250, 250, 250); color: #1a1a1a;">시즌 생성</button>
             </div>
 
             <!-- 저장된 시즌 목록 -->
@@ -1713,7 +1947,7 @@
         </div>
     </div>
 
-    <div class="success-message" id="successMessage">저장되었습니다! ✓</div>
+    <div class="success-message" id="successMessage">저장되었습니다</div>
 
     <!-- 경기 상세 모달 -->
     <div id="matchDetailModal" class="match-detail-modal">

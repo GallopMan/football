@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>자동 팀 분배 결과</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="gm-theme.css">
     <style>
         .page-header {
             text-align: center;
@@ -265,9 +266,39 @@
             background-color: #3a5f95;
             box-shadow: 0 4px 12px rgba(74,111,165,0.3);
         }
+
+        /* === gm light theme overrides === */
+        body { --gm-bg: url('assets/bg-futsal.png'); }
+        .top-menu { display:none !important; }
+        .container { padding-top:70px; }
+        .page-header { background:transparent !important; }
+        .page-title, .config-title, .team-header { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
+        .field-config, .team-box { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; }
+        .field-input label { color: var(--gm-muted) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.08em; }
+        .field-input input { border:1px solid var(--gm-line-strong) !important; border-radius:8px !important; }
+        .field-input input:focus { border-color: var(--gm-blue) !important; }
+        .generate-btn, .reshuffle-btn, .restart-btn { background:#f5f5f5 !important; color:#1a1a1a !important; border:none !important; border-radius:8px !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important; padding:12px 30px; cursor:pointer; }
+        .generate-btn:hover, .reshuffle-btn:hover, .restart-btn:hover { background:#e0e0e0 !important; color:#1a1a1a !important; box-shadow:0 8px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
+        .player-item { background:#f7f9fc !important; border-radius:8px !important; }
+        .player-number { background: var(--gm-ink) !important; font-family:'Archivo Black',sans-serif !important; }
+        .player-name { color: var(--gm-ink) !important; }
+        .stat-label { color: var(--gm-muted) !important; font-family:'Space Mono',monospace !important; }
+        .stat-value { color: var(--gm-ink) !important; font-family:'Archivo Black',sans-serif !important; }
+        .lock-btn.locked { color: var(--gm-blue) !important; }
+        .lock-btn.locked:hover { color:#4d8aff !important; }
+        .star { color:#f0a925 !important; }
     </style>
 </head>
 <body>
+    <nav class="gm-nav">
+        <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
+        <div class="gm-nav-links">
+            <a href="records.html">Records</a>
+            <a href="team.html">My Team</a>
+            <a href="team-info.html">Edit Team</a>
+            <a href="login.html">Login</a>
+        </div>
+    </nav>
     <div class="container">
         <!-- 상단 메뉴 -->
         <div class="top-menu">

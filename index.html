@@ -1,474 +1,1653 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>g - Manager</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Iansui&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* 모달 스타일 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease-out;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>g-Manager — Your Club, Orchestrated</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet" />
+<style>
+  /* ---------- tokens ---------- */
+  :root {
+    --ink: #0a0a0a;
+    --ink-soft: #222;
+    --muted: #6b6b6b;
+    --line: #e4e4e4;
+    --paper: #ffffff;
+    --paper-2: #f5f5f2;
+    /* accent — controlled by tweaks */
+    --accent: #5ba83f;          /* default: pitch green */
+    --accent-ink: #0a0a0a;
+    --accent-contrast: #ffffff;
+  }
 
-        .modal-content {
-            background-color: #ffffff;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            max-height: 80vh;
-            overflow-y: auto;
-        }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: var(--paper); color: var(--ink); }
+  body {
+    font-family: 'Archivo', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  img { display: block; max-width: 100%; }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
 
-        .modal-header {
-            font-size: 24px;
-            font-weight: bold;
-            color: #111;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #5ba83f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+  /* ---------- top nav ---------- */
+  .nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    color: var(--ink);
+    pointer-events: none;
+  }
+  .nav > * { pointer-events: auto; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo img {
+    height: 58px; width: auto;
+  }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    border-radius: 2px;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 0.55; }
+  .nav-links .nav-cta {
+    border: none;
+    padding: 10px 0;
+    margin-left: 8px;
+  }
 
-        .modal-close-x {
-            width: 30px;
-            height: 30px;
-            background: #eee;
-            border: none;
-            border-radius: 50%;
-            font-size: 16px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            transition: all 0.2s;
-        }
+  /* ---------- scroll progress ---------- */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: var(--accent);
+    z-index: 200;
+    transition: width 0.05s linear;
+  }
 
-        .modal-close-x:hover {
-            background: #ddd;
-            color: #111;
-        }
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    background: #ffffff;
+    color: var(--ink);
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url('배경3.png');
+    background-size: cover;
+    background-position: center;
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    padding: 140px 28px 40px;
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: end;
+    gap: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: currentColor;
+  }
+  .hero-wordmark {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.35em;
+    color: var(--ink);
+    text-transform: none;
+  }
+  .hero-wordmark::before { display: none; }
+  .hero-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 900;
+    font-size: clamp(56px, 11.5vw, 190px);
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .hero-title .line {
+    display: block;
+    padding-bottom: 2px;
+  }
+  .hero-title .kr {
+    font-family: 'Noto Sans KR', 'Archivo Black', sans-serif;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+  .hero-title .brand {
+    position: relative;
+    display: inline-block;
+    padding: 0.04em 0.16em 0.06em;
+    margin-right: 0.08em;
+    color: var(--accent-contrast);
+    background: var(--ink);
+    box-shadow: 10px 10px 0 var(--accent);
+  }
+  .hero-title .brand > span {
+    display: inline-block;
+  }
+  .hero-title .with {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 0.22em;
+    letter-spacing: 0.34em;
+    vertical-align: 0.75em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-right: 0.25em;
+  }
+  .hero-title .accent-word {
+    color: var(--accent);
+    font-family: 'Archivo', serif;
+    font-weight: 900;
+  }
+  .hero-logo-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 14px 0 12px;
+  }
+  .hero-logo-center img {
+    max-width: min(308px, 42vw);
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 30px rgba(0, 0, 0, 0.08));
+  }
+  .hero-tagline {
+    text-align: center;
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-size: clamp(13px, 1.8vw, 25px);
+    letter-spacing: -0.005em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .hero-tagline .accent-word {
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .hero-inner {
+    text-align: center;
+  }
+  .hero-inner > div { width: 100%; }
+  .hero-eyebrow, .hero-meta, .hero-ctas { justify-content: center; }
+  .hero-ctas { justify-content: center !important; }
+  .hero-meta {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    margin-top: 40px;
+    margin-bottom: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+  .hero-meta-full p { max-width: 1100px; }
+  .hero-meta-col h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .hero-meta-col p {
+    font-size: 15px;
+    line-height: 1.45;
+    max-width: 380px;
+  }
 
-        .modal-body {
-            margin-bottom: 20px;
-        }
+  /* hero CTA */
+  .hero-ctas {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  /* apple-style ghost CTA — text only, motion-driven */
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 0;
+    background: transparent;
+    color: var(--ink);
+    border: none;
+    border-bottom: 1.5px solid var(--ink);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border-radius: 0;
+    position: relative;
+    transition: text-shadow 0.2s ease;
+  }
+  .btn-cta:hover {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--ink);
+    text-shadow: 0 0 0.5px var(--ink), 0 0 0.5px var(--ink);
+  }
+  .btn-cta .arrow {
+    display: inline-block;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-cta:hover .arrow { transform: translateX(8px); }
+  .btn-cta.outline { color: var(--muted); border-bottom-color: var(--muted); }
+  .btn-cta.outline:hover { color: var(--ink); border-bottom-color: var(--ink); }
 
-        .team-info-box {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #5ba83f;
-            margin-bottom: 20px;
-        }
+  .hero-ctas { gap: 36px; margin-top: 40px; }
+  .hero-ctas .btn-cta { padding: 10px 0; }
 
-        .team-info-box h3 {
-            color: #111;
-            margin-bottom: 10px;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+  .promo .btn-cta {
+    background: transparent;
+    color: #fff;
+    border-bottom-color: #fff;
+  }
+  .promo .btn-cta:hover {
+    background: transparent;
+    color: #fff;
+    border-bottom-color: #fff;
+  }
+  .promo-cta:hover {
+    background: transparent !important;
+    color: #fff !important;
+    border-bottom-color: #fff !important;
+  }
 
-        .team-logo {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #5ba83f;
-        }
+  .final-ctas { gap: 40px; }
+  .final-ctas .btn-cta { padding: 14px 0; font-size: 13px; }
 
-        .team-logo-placeholder {
-            font-size: 24px;
-        }
+  /* promo title accent */
+  .promo-accent {
+    font-style: italic;
+    font-family: 'Archivo', serif;
+    color: var(--accent);
+  }
+  .promo-body.reveal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+  }
+  .promo-start-btn {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(18px, 2vw, 26px);
+    letter-spacing: 0.02em;
+    padding: 28px 48px !important;
+    border: 1px solid rgba(255,255,255,0.35) !important;
+    color: #fff !important;
+    background: rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -1px 0 rgba(0,0,0,0.25),
+      0 20px 40px rgba(0, 20, 60, 0.45);
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+    text-transform: none;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 999px;
+  }
+  .promo-start-btn:hover {
+    background: rgba(255,255,255,0.18) !important;
+    border-color: rgba(255,255,255,0.6) !important;
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.5),
+      0 30px 60px rgba(120, 180, 255, 0.45);
+  }
+  .promo-start-btn .arrow {
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  }
+  .promo-start-btn:hover .arrow {
+    transform: translateX(8px);
+  }
 
-        .team-info-box p {
-            margin: 5px 0;
-            color: #555;
-            font-size: 14px;
-        }
+  /* hero scroll hint */
+  .scroll-hint {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .scroll-hint .line {
+    width: 1px; height: 36px;
+    background: currentColor;
+    animation: scrollPulse 1.8s ease-in-out infinite;
+    transform-origin: top;
+  }
+  @keyframes scrollPulse {
+    0%, 100% { transform: scaleY(0.2); opacity: 0.4; }
+    50%      { transform: scaleY(1);   opacity: 1; }
+  }
 
-        .player-count {
-            font-weight: bold;
-            color: #5ba83f;
-            font-size: 16px;
-        }
+  /* ---------- ticker ---------- */
+  .ticker {
+    background: var(--ink);
+    color: #fff;
+    padding: 18px 0;
+    overflow: hidden;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .ticker-track {
+    display: flex;
+    gap: 60px;
+    white-space: nowrap;
+    animation: tickerScroll 36s linear infinite;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .ticker-track span {
+    display: inline-flex;
+    align-items: center;
+    gap: 60px;
+  }
+  .ticker-track .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: inline-block;
+  }
+  @keyframes tickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
 
-        .players-section {
-            margin-bottom: 20px;
-        }
+  /* ---------- sticky 3D scroll feature section ---------- */
+  .features-scroll {
+    position: relative;
+    /* 4 features * 100vh + initial */
+    height: 500vh;
+    background: var(--paper);
+    margin-bottom: 0;
+  }
+  .features-scroll + .promo {
+    margin-top: 0;
+  }
+  .features-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
 
-        .players-section h4 {
-            color: #111;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 2px solid #5ba83f;
-            font-size: 15px;
-        }
+  /* left: stacked 3D cards */
+  .features-visual {
+    position: relative;
+    background: var(--paper-2);
+    overflow: hidden;
+    perspective: 1400px;
+  }
+  .feature-card {
+    position: absolute;
+    inset: 10%;
+    background: var(--paper);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.18), 0 8px 20px rgba(0,0,0,0.08);
+    transform-style: preserve-3d;
+    transition:
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.6s ease;
+    will-change: transform, opacity;
+  }
+  .feature-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .feature-card-label {
+    position: absolute;
+    top: 20px; left: 20px;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 8px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+  }
+  .feature-card-index {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    background: transparent;
+    color: #fff;
+    padding: 6px 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 2px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    letter-spacing: 0.05em;
+  }
 
-        .player-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
+  /* feature-card position states — driven by data attr */
+  .feature-card[data-state="stack-2"] { transform: translate3d(6%, 6%, -160px) rotate(3deg); opacity: 0.45; }
+  .feature-card[data-state="stack-1"] { transform: translate3d(3%, 3%, -80px)  rotate(1.5deg); opacity: 0.75; }
+  .feature-card[data-state="active"]  { transform: translate3d(0, 0, 0)       rotate(0deg); opacity: 1; }
+  .feature-card[data-state="out"] {
+    transform: translate3d(-60%, -8%, 200px) rotate(-10deg);
+    opacity: 0;
+  }
+  .feature-card[data-state="hidden"] {
+    transform: translate3d(20%, 20%, -400px) rotate(8deg);
+    opacity: 0;
+  }
 
-        .player-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 6px;
-            border-left: 4px solid #5ba83f;
-        }
+  /* right: text column */
+  .features-text {
+    position: relative;
+    padding: 80px 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-image: url('assets/features-bg-curves.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-left: 1px solid var(--line);
+    color: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .features-text > * { position: relative; z-index: 2; }
+  .features-text .feature-num,
+  .features-text .feature-num b { color: rgba(10,10,10,0.55); }
+  .features-text .feature-title { color: var(--ink); }
+  .features-text .feature-desc { color: rgba(10,10,10,0.72); }
+  .features-text .feature-tag {
+    color: rgba(10,10,10,0.85);
+    border: 1px solid rgba(10,10,10,0.18);
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+  }
+  .features-text .features-progress .seg { background: rgba(10,10,10,0.12); }
+  .features-text .features-progress .seg::after { background: rgba(10,10,10,0.45); }
+  .features-text .features-progress .seg.active::after { background: var(--ink); }
+  .features-text .feature-num,
+  .features-text .feature-num b { color: rgba(10,10,10,0.55); }
+  .features-text .feature-title { color: var(--ink); }
+  .features-text .feature-desc { color: rgba(10,10,10,0.72); }
+  .features-text .feature-tag {
+    color: rgba(10,10,10,0.85);
+    border: 1px solid rgba(10,10,10,0.18);
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      0 4px 12px rgba(0, 20, 60, 0.06);
+  }
+  .features-text .features-progress .seg { background: rgba(10,10,10,0.12); }
+  .features-text .features-progress .seg::after { background: rgba(10,10,10,0.45); }
+  .features-text .features-progress .seg.active::after { background: var(--ink); }
+  .features-progress {
+    position: absolute;
+    top: 80px; left: 56px; right: 56px;
+    display: flex;
+    gap: 8px;
+  }
+  .features-progress .seg {
+    flex: 1;
+    height: 2px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  .features-progress .seg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .features-progress .seg.done::after { transform: scaleX(1); }
+  .features-progress .seg.active::after {
+    transform: scaleX(1);
+    background: #0a0a0a;
+  }
 
-        .player-number {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 10px;
-            flex-shrink: 0;
-            background: transparent;
-        }
+  .feature-slot {
+    position: relative;
+    min-height: 360px;
+  }
+  .feature-panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .feature-panel.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .feature-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .feature-num b {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .feature-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 900;
+    font-size: clamp(40px, 5vw, 68px);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .feature-desc {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 460px;
+    margin-bottom: 28px;
+  }
+  .feature-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .feature-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    background: var(--paper-2);
+    color: var(--ink);
+    border-radius: 2px;
+    border: 1px solid var(--line);
+  }
+  .feature-tag.accent {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    border-color: var(--accent);
+  }
 
-        .player-number img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
+  /* ---------- promo / billboard ---------- */
+  .promo {
+    position: relative;
+    padding: 140px 28px 60px;
+    background: #02060f;
+    color: #fff;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .promo-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 110% 70% at 30% 20%, rgba(30, 110, 255, 0.55) 0%, rgba(0, 30, 90, 0) 55%),
+      radial-gradient(ellipse 90% 60% at 80% 80%, rgba(60, 160, 255, 0.55) 0%, rgba(0, 20, 60, 0) 60%),
+      radial-gradient(ellipse 70% 50% at 10% 90%, rgba(0, 90, 220, 0.45) 0%, rgba(0, 10, 40, 0) 65%),
+      linear-gradient(180deg, #000308 0%, #02091c 50%, #000206 100%);
+    z-index: 0;
+  }
+  .promo-bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(ellipse 60% 110% at 22% 35%, rgba(140, 200, 255, 0.4) 0%, rgba(20, 80, 200, 0) 55%),
+      radial-gradient(ellipse 50% 90% at 75% 80%, rgba(120, 190, 255, 0.5) 0%, rgba(10, 60, 180, 0) 60%);
+    mix-blend-mode: screen;
+    filter: blur(14px);
+    pointer-events: none;
+  }
+  .promo-bg::after { display: none; }
+  .promo-curves { display: none; }
+  .promo-curves svg {
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    left: -20%;
+    top: -20%;
+    filter: blur(0.5px);
+  }
+  .promo-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .promo-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .promo-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 900;
+    font-size: clamp(44px, 6vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+  }
+  .promo-body p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #d4d4d4;
+    max-width: 440px;
+    margin-bottom: 28px;
+  }
+  .promo .btn-cta {
+    background: #fff;
+    color: var(--ink);
+    border-color: #fff;
+  }
+  .promo .btn-cta:hover {
+    background: var(--ink);
+    color: #fff;
+    border-color: #fff;
+  }
+  .promo-cta:hover {
+    background: var(--ink) !important;
+    color: #fff !important;
+    border-color: #fff !important;
+  }
 
-        .player-name {
-            color: #111;
-            font-weight: 600;
-            font-size: 14px;
-        }
+  /* ---------- stats ---------- */
+  .stats {
+    padding: 100px 28px;
+    background: var(--paper);
+    border-top: 1px solid var(--line);
+  }
+  .stats-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+  .stat {
+    border-top: 2px solid var(--ink);
+    padding-top: 20px;
+  }
+  .stat-num {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 900;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
 
-        .no-team-message {
-            color: #999;
-            text-align: center;
-            padding: 40px 20px;
-            font-style: italic;
-        }
+  /* ---------- footer / final cta ---------- */
+  .final {
+    position: relative;
+    background: #02060f;
+    color: #fff;
+    padding: 80px 28px 40px;  /* tighter top padding — flows from promo */
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .final-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 110% 70% at 20% 80%, rgba(30, 120, 255, 0.55) 0%, rgba(0, 30, 90, 0) 55%),
+      radial-gradient(ellipse 90% 60% at 85% 25%, rgba(60, 160, 255, 0.5) 0%, rgba(0, 20, 60, 0) 60%),
+      linear-gradient(180deg, #000206 0%, #03091c 50%, #000308 100%);
+    z-index: 0;
+  }
+  .final-curves {
+    position: absolute; inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .final-curves svg {
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    left: -20%;
+    top: -20%;
+  }
+  .final-inner { position: relative; z-index: 2; }
+  .final-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .final-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-weight: 900;
+    font-size: clamp(56px, 10vw, 160px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+  .final-title .soft { color: var(--muted); }
+  /* (final-ctas removed; scroll-top button now lives on final-foot border) */
+  .final-foot {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .scroll-top-btn {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--paper);
+    border: none;
+    padding: 0 18px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0.55;
+    transition: opacity 0.25s ease, color 0.25s ease, background 0.25s ease, padding 0.25s ease;
+  }
+  .scroll-top-btn .stb-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+  .scroll-top-btn .stb-arrow {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+  }
+  .scroll-top-btn:hover {
+    opacity: 1;
+    color: var(--ink);
+    padding: 0 22px;
+  }
+  .scroll-top-btn:hover .stb-arrow {
+    transform: translateY(-3px);
+  }
+  .final-foot-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .final-foot-left img {
+    height: 42px !important;
+    width: auto !important;
+    max-width: 160px;
+    object-fit: contain;
+  }
+  .final-foot img {
+    height: 42px;
+    width: auto;
+  }
 
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-        }
+  .final-foot .copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
 
-        .modal-buttons button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
+  /* ---------- outro ---------- */
+  .outro {
+    position: relative;
+    min-height: 100vh;
+    padding: 140px 28px 60px;
+    background: #ffffff;
+    color: var(--ink);
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .outro-bg {
+    position: absolute; inset: 0;
+    background-image: url('assets/hero-bg-curves.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.35;
+    filter: brightness(1.6) saturate(0.6);
+    z-index: 0;
+  }
+  .outro-bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(255,255,255,0.55) 0%,
+      rgba(255,255,255,0.35) 50%,
+      rgba(255,255,255,0.75) 100%);
+  }
+  .outro-curves {
+    position: absolute; inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .outro-curves svg {
+    position: absolute;
+    width: 140%;
+    height: 140%;
+    left: -20%;
+    top: -20%;
+  }
+  .outro-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .outro-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(10,10,10,0.65);
+    padding: 8px 14px;
+    border: 1px solid rgba(10,10,10,0.15);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px);
+    margin-bottom: 40px;
+  }
+  .outro-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .outro-title {
+    font-family: 'Archivo Black', 'Pretendard', sans-serif;
+    font-weight: 900;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .outro-line {
+    display: block;
+  }
+  .outro-line.reveal {
+    opacity: 0;
+    transform: translateY(80px);
+    transition: opacity 1.2s ease, transform 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .outro-line.reveal:nth-child(1) { transition-delay: 0.1s; }
+  .outro-line.reveal:nth-child(2) { transition-delay: 0.4s; }
+  .outro-line.reveal:nth-child(3) { transition-delay: 0.7s; }
+  .outro-line.reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .outro-curves { display: none; }
+  .outro-accent {
+    color: var(--ink) !important;
+    font-family: 'Archivo Black', sans-serif;
+  }
+  .outro-foot {
+    margin-top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(10,10,10,0.12);
+  }
+  .outro-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: rgba(10,10,10,0.5);
+  }
+  @media (max-width: 768px) {
+    .outro { padding: 100px 20px 40px; }
+    .outro-foot { flex-direction: column; align-items: flex-start; }
+  }
 
-        .modal-close {
-            background: #ddd;
-            color: #111;
-        }
+  /* ---------- scroll-reveal ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
-        .modal-close:hover {
-            background: #ccc;
-        }
+  /* ---------- modal (from original) ---------- */
+  .modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,10,10,0.6);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-out;
+  }
+  .modal-content {
+    background: var(--paper);
+    margin: 6% auto;
+    padding: 32px;
+    border-radius: 4px;
+    max-width: 560px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-top: 4px solid var(--accent);
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .modal-header span {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+  .modal-close-x {
+    width: 32px; height: 32px;
+    background: var(--paper-2);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .modal-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+  .modal-buttons button {
+    padding: 12px 20px;
+    border: 1px solid var(--ink);
+    font-family: 'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .modal-close {
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .modal-edit {
+    background: var(--ink);
+    color: #fff;
+  }
+  .team-info-box {
+    background: var(--paper-2);
+    padding: 18px;
+    border-left: 4px solid var(--accent);
+    margin-bottom: 18px;
+  }
+  .team-info-box h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .team-logo {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent);
+  }
+  .team-info-box p {
+    font-size: 13px;
+    margin: 4px 0;
+    color: var(--ink-soft);
+  }
+  .player-count { color: var(--accent); font-weight: 700; }
+  .players-section { margin-bottom: 16px; }
+  .players-section h4 {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .player-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+  .player-item {
+    display: flex; align-items: center;
+    padding: 8px 12px;
+    background: var(--paper-2);
+    border-left: 3px solid var(--accent);
+    font-size: 13px;
+  }
+  .player-item .player-number {
+    width: 28px; height: 28px;
+    margin-right: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+  }
+  .no-team-message {
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 20px;
+    font-style: italic;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 
-        .modal-edit {
-            background: #5ba83f;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .nav { padding: 14px 18px; }
+    .nav-links a { padding: 8px 10px; font-size: 10px; }
+    .nav-links .nav-cta { padding: 8px 12px; }
+    .nav-logo .wordmark { display: none; }
 
-        .modal-edit:hover {
-            background: #7bc34a;
-        }
+    .hero-inner { padding: 120px 20px 40px; }
+    .hero-meta { grid-template-columns: 1fr; gap: 24px; }
 
-        .modal-auto {
-            background: #5ba83f;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
+    .features-sticky { grid-template-columns: 1fr; grid-template-rows: 45vh 55vh; }
+    .features-text { padding: 40px 24px 60px; border-left: none; border-top: 1px solid var(--line); }
+    .features-progress { top: 20px; left: 24px; right: 24px; }
+    .feature-slot { min-height: 260px; }
 
-        .modal-auto:hover {
-            background: #7bc34a;
-        }
+    .promo-inner { grid-template-columns: 1fr; gap: 30px; }
+    .stats-inner { grid-template-columns: 1fr 1fr; gap: 24px; }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        /* 좌상단 로고 */
-        .site-logo {
-            position: fixed;
-            top: 0px;
-            left: 16px;
-        }
+    .final { padding: 80px 20px 30px; }
+    .final-foot { flex-direction: column; align-items: flex-start; }
+  }
 
-        .site-logo img {
-            height: 77px;
-            width: auto;
-            display: block;
-        }
+  /* ---------- tweaks panel minimal ---------- */
+  .tweaks {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 500;
+    background: #fff;
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    padding: 18px;
+    width: 260px;
+    border-radius: 4px;
+  }
+  .tweaks.open { display: block; }
+  .tweaks h5 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tweaks h5 button {
+    background: none; border: none;
+    cursor: pointer; font-size: 16px;
+    color: var(--muted);
+  }
+  .tweak-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .tweak-swatch {
+    flex: 1;
+    border: 1.5px solid var(--line);
+    padding: 10px 8px;
+    background: #fff;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .tweak-swatch .dot {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+  }
+  .tweak-swatch.active {
+    border-color: var(--ink);
+    background: var(--paper-2);
+  }
 
-        /* 중앙 로고 */
-        .center-logo {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-
-        .center-logo img {
-            height: 173px;
-            width: auto;
-        }
-
-        /* 히어로 섹션 */
-        .hero-section {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-        }
-
-        .hero-bg {
-            width: 100%;
-            display: block;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0.55) 0%,
-                rgba(255,255,255,0.45) 60%,
-                rgba(255,255,255,0.7) 100%
-            );
-        }
-
-        .hero-content {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            padding-bottom: 40px;
-        }
-
-        .center-logo-text {
-            font-size: 13px;
-            font-weight: 700;
-            color: #111;
-            margin-top: 4px;
-            letter-spacing: 6px;
-        }
-
-        .center-logo-sub {
-            font-size: 12px;
-            color: #555;
-            margin-top: 4px;
-            letter-spacing: 2px;
-        }
-
-    </style>
+</style>
 </head>
 <body>
-    <!-- 좌상단 로고 -->
-    <a href="index.html" class="site-logo">
-        <img src="logo.png" alt="g-Manager 로고">
-    </a>
 
-    <div class="container">
-        <!-- 상단 메뉴 -->
-        <div class="top-menu">
-            <a href="records.html">기록실</a>
-            <a href="#" onclick="showMyTeam(event)">나의팀</a>
-            <a href="team-info.html">팀 정보 수정</a>
-            <a href="login.html" class="login-link">로그인</a>
-        </div>
+<!-- scroll progress bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
 
-        <!-- 메인 히어로 섹션 -->
-        <div class="hero-section">
-            <!-- 배경 이미지 -->
-            <img class="hero-bg" src="ChatGPT Image 2026년 3월 3일 오전 12_48_04.png" alt="배경">
-            <!-- 흰색 오버레이 -->
-            <div class="hero-overlay"></div>
-            <!-- 콘텐츠 -->
-            <div class="hero-content">
-                <div class="center-logo">
-                    <img src="logo.png" alt="g-Manager 로고">
-                    <span class="center-logo-text"><span style="font-size:17.3px">g</span>-<span style="text-transform:uppercase">manager</span></span>
-                    <span class="center-logo-sub">여러분의 클럽을 만들어가세요</span>
-                </div>
-                <div class="buttons-section">
-                    <button class="btn" onclick="location.href='team.html'">축구</button>
-                    <button class="btn" onclick="location.href='futsal.html'">풋살</button>
-                </div>
-            </div>
+<!-- top nav -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">
+    <img src="assets/logo.png" alt="g-Manager" style="width: 75.6094px; height: 60px; object-fit: cover" />
+  </a>
+  <div class="nav-links">
+    <a href="records.html">Records</a>
+    <a href="#" onclick="showMyTeam(event)">My Team</a>
+    <a href="team-info.html">Edit Team</a>
+    <a href="login.html" class="nav-cta">Login</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" data-screen-label="01 Hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow hero-wordmark" style="font-family: &quot;Work Sans&quot;; border-style: none; letter-spacing: 3px"></div>
+      <div class="hero-logo-center">
+        <img src="assets/logo.png" alt="g-Manager" />
+      </div>
+      <p class="hero-tagline">
+        Manage <span class="accent-word" style="color: rgb(10, 10, 10)">Your</span> Own Team<span style="color: rgb(236, 100, 40)">*</span>
+      </p>
+      <div class="hero-ctas">
+        <button class="btn-cta" onclick="handleSoccerBtn()">
+          <span>Start with Football</span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="btn-cta outline" onclick="location.href='futsal.html'">
+          <span>Start with Futsal</span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+      <div class="hero-meta">
+        <div class="hero-meta-col hero-meta-full">
+          <h4></h4>
+          <p></p>
         </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <span class="line"></span>
+  </div>
+</section>
+
+
+
+<!-- FEATURES — sticky 3D scroll -->
+<section class="features-scroll" id="featuresScroll" data-screen-label="02 Features">
+  <div class="features-sticky">
+    <!-- LEFT: card stack -->
+    <div class="features-visual" id="featuresVisual">
+      <div class="feature-card" data-idx="0">
+        <img src="assets/img-stadium.png" alt="Stadium" />
+        <div class="feature-card-label">Field</div>
+        <div class="feature-card-index">01 / 04</div>
+      </div>
+      <div class="feature-card" data-idx="1">
+        <img src="assets/img-huddle-color.png" alt="Huddle" />
+        <div class="feature-card-label">Formation</div>
+        <div class="feature-card-index">02 / 04</div>
+      </div>
+      <div class="feature-card" data-idx="2">
+        <img src="assets/img-lockerroom.png" alt="Locker" />
+        <div class="feature-card-label">Roster</div>
+        <div class="feature-card-index">03 / 04</div>
+      </div>
+      <div class="feature-card" data-idx="3">
+        <img src="assets/img-huddle-gray.png" alt="Records" />
+        <div class="feature-card-label">Records</div>
+        <div class="feature-card-index">04 / 04</div>
+      </div>
     </div>
 
-    <!-- 나의팀 모달 -->
-    <div id="myTeamModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <span>나의 팀</span>
-                <button class="modal-close-x" onclick="document.getElementById('myTeamModal').style.display='none'">✕</button>
-            </div>
-            <div class="modal-body" id="modalBody">
-                <!-- 팀 정보가 여기에 표시됩니다 -->
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-close" onclick="closeModal()">닫기</button>
-                <button class="modal-edit" onclick="editTeam()">팀 수정하기</button>
-            </div>
+    <!-- RIGHT: copy -->
+    <div class="features-text">
+      <div class="features-progress" id="featuresProgress">
+        <div class="seg"></div>
+        <div class="seg"></div>
+        <div class="seg"></div>
+        <div class="seg"></div>
+      </div>
+
+      <div class="feature-slot" id="featureSlot">
+        <div class="feature-panel active" data-idx="0">
+          <div class="feature-num"><b>01</b> / 04 — Formation</div>
+          <h3 class="feature-title">팀구성을 간단하게<br />손쉽게</h3>
+          <p class="feature-desc">
+            베스트 11을 구성하세요<br />후보부터 교체까지 한번에
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">Drag & Drop</span>
+            <span class="feature-tag">자유로운 포메이션</span>
+          </div>
         </div>
+
+        <div class="feature-panel" data-idx="1">
+          <div class="feature-num"><b>02</b> / 04 </div>
+          <h3 class="feature-title">자동 팀구성<br />균형있는 팀</h3>
+          <p class="feature-desc">
+            자동으로 팀의 벨러스를 맞춥니다<br />자동 벨러스 조정
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag accent" style="background-color: rgb(245, 245, 242); color: rgb(10, 10, 10); border-color: rgb(228, 228, 228)">Auto-Balance</span>
+            <span class="feature-tag">2 Team / 3 Team</span>
+            <span class="feature-tag">Shuffle</span>
+          </div>
+        </div>
+
+        <div class="feature-panel" data-idx="2">
+          <div class="feature-num"><b>03</b> / 04 </div>
+          <h3 class="feature-title">경기결과 관리<br />선수개인기록 관리</h3>
+          <p class="feature-desc">
+            시즌을 생성하고 개인 선수글과 경기 결과를 관리하세요
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag accent" style="background-color: rgb(245, 245, 242); border-color: rgb(228, 228, 228); color: rgb(10, 10, 100)">Team Logo</span>
+            <span class="feature-tag">Up to 40 Players</span>
+            <span class="feature-tag">Profiles</span>
+          </div>
+        </div>
+
+        <div class="feature-panel" data-idx="3">
+          <div class="feature-num"><b>04</b> / 04</div>
+          <h3 class="feature-title">경기 공유<br />인스타 업로드</h3>
+          <p class="feature-desc">
+            기록을 바탕으로 여러분의 경기를 공유하세요
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">Stats Tracking</span>
+            <span class="feature-tag">Season Log</span>
+            <span class="feature-tag">Top Scorer</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+</section>
 
-    <script>
-        // 나의팀 클릭 시 모달 표시
-        function showMyTeam(event) {
-            event.preventDefault();
-            const savedData = localStorage.getItem('teamSetup');
-            const modal = document.getElementById('myTeamModal');
-            const modalBody = document.getElementById('modalBody');
+<!-- OUTRO — bridges from features dark blue -->
+<section class="outro" data-screen-label="05 Outro">
+  <div class="outro-bg" aria-hidden="true"></div>
+  <div class="outro-curves" aria-hidden="true">
+    <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <linearGradient id="outroSheen" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%" stop-color="#000a18" stop-opacity="0"/>
+          <stop offset="40%" stop-color="#1c6dff" stop-opacity="0.45"/>
+          <stop offset="75%" stop-color="#9bd5ff" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#001028" stop-opacity="0"/>
+        </linearGradient>
+        <linearGradient id="outroEdge" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#bfe4ff" stop-opacity="0"/>
+          <stop offset="50%" stop-color="#bfe4ff" stop-opacity="0.55"/>
+          <stop offset="100%" stop-color="#bfe4ff" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="outroSoft" x="-10%" y="-10%" width="120%" height="120%">
+          <feGaussianBlur stdDeviation="6"/>
+        </filter>
+      </defs>
+      <path d="M -50 720 C 220 620, 440 800, 600 620 S 880 280, 1100 220 L 1100 1100 L -50 1100 Z" fill="url(#outroSheen)" filter="url(#outroSoft)"/>
+      <path d="M -50 720 C 220 620, 440 800, 600 620 S 880 280, 1100 220" fill="none" stroke="url(#outroEdge)" stroke-width="1.5" opacity="0.55"/>
+    </svg>
+  </div>
+  <div class="outro-inner">
+    <div class="outro-eyebrow reveal">
+      <span class="outro-dot" style="background-color: rgb(240, 89, 24);"></span>
+      <span>READY TO START</span>
+    </div>
+    <h2 class="outro-title">
+      <span class="outro-line reveal">상상만 해오던 걸,</span>
+      <span class="outro-line reveal">이제 <span class="outro-accent" style="color: rgb(10, 10, 10);">g-Manager</span>와</span>
+      <span class="outro-line reveal">함께하세요</span>
+    </h2>
+    <div class="outro-foot reveal">
+      <div class="outro-copy">© 2026 g-Manager</div>
+    </div>
+  </div>
+</section>
 
-            if (savedData) {
-                const data = JSON.parse(savedData);
-                const onFieldPlayers = data.players.filter(p => p.onField);
-                const subPlayers = data.players.filter(p => !p.onField);
+<!-- ===== modal (nav: My Team) ===== -->
+<div id="myTeamModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>My Team</span>
+      <button class="modal-close-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-buttons">
+      <button class="modal-close" onclick="closeModal()">Close</button>
+      <button class="modal-edit" onclick="editTeam()">Edit →</button>
+    </div>
+  </div>
+</div>
 
-                // 팀 정보에서 로고 가져오기
-                const teamInfo = localStorage.getItem('teamInfo');
-                let teamLogo = '';
-                if (teamInfo) {
-                    const info = JSON.parse(teamInfo);
-                    if (info.logo) {
-                        teamLogo = `<img src="${info.logo}" alt="팀 로고" class="team-logo">`;
-                    } else {
-                        teamLogo = '<span class="team-logo-placeholder"></span>';
-                    }
-                } else {
-                    teamLogo = '<span class="team-logo-placeholder"></span>';
-                }
+<!-- ===== tweaks panel ===== -->
+<div class="tweaks" id="tweaksPanel">
+  <h5>
+    <span>Tweaks</span>
+    <button onclick="closeTweaks()">✕</button>
+  </h5>
+  <div style="font-family:'Space Mono', monospace; font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:8px;">Accent Color</div>
+  <div class="tweak-row">
+    <button class="tweak-swatch active" data-theme="pitch" onclick="setTheme('pitch')">
+      <span class="dot" style="background:#5ba83f"></span>
+      <span>Pitch</span>
+    </button>
+    <button class="tweak-swatch" data-theme="electric" onclick="setTheme('electric')">
+      <span class="dot" style="background:#2a6cff"></span>
+      <span>Electric</span>
+    </button>
+    <button class="tweak-swatch" data-theme="fire" onclick="setTheme('fire')">
+      <span class="dot" style="background:#ff4a28"></span>
+      <span>Fire</span>
+    </button>
+  </div>
+</div>
 
-                let html = `
-                    <div class="team-info-box">
-                        <h3>${teamLogo} ${data.teamName}</h3>
-                        <p>필드 선수: <span class="player-count">${onFieldPlayers.length}명</span></p>
-                        <p>교대 선수: <span class="player-count">${subPlayers.length}명</span></p>
-                        <p>전체: <span class="player-count">${data.players.length}명</span></p>
-                    </div>
+<script>
+/* ===========================================
+   SCROLL PROGRESS
+=========================================== */
+const scrollProgress = document.getElementById('scrollProgress');
+function updateScrollProgress() {
+  const h = document.documentElement;
+  const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+  scrollProgress.style.width = pct + '%';
+}
+window.addEventListener('scroll', updateScrollProgress, { passive: true });
 
-                    <div class="players-section">
-                        <h4>필드 선수 (${onFieldPlayers.length}명)</h4>
-                `;
+/* ===========================================
+   FEATURES — 3D CARD STACK DRIVEN BY SCROLL
+=========================================== */
+const featuresScroll = document.getElementById('featuresScroll');
+const featureCards   = document.querySelectorAll('.feature-card');
+const featurePanels  = document.querySelectorAll('.feature-panel');
+const progressSegs   = document.querySelectorAll('#featuresProgress .seg');
+const COUNT = featureCards.length;
+let currentIdx = -1;
 
-                if (onFieldPlayers.length > 0) {
-                    html += '<div class="player-list">';
-                    onFieldPlayers.forEach(player => {
-                        html += `
-                            <div class="player-item">
-                                <div class="player-number">${teamLogo || player.number}</div>
-                                <div class="player-name">${player.name}</div>
-                            </div>
-                        `;
-                    });
-                    html += '</div>';
-                } else {
-                    html += '<p style="color: #999; text-align: center; padding: 10px;">필드 선수가 없습니다.</p>';
-                }
+function updateFeatures() {
+  const rect = featuresScroll.getBoundingClientRect();
+  const vh = window.innerHeight;
+  // total scrollable distance = section height - viewport
+  const total = featuresScroll.offsetHeight - vh;
+  const scrolled = Math.min(Math.max(-rect.top, 0), total);
+  const pct = total > 0 ? scrolled / total : 0;
 
-                html += `
-                    </div>
+  // which slide is active
+  const idx = Math.min(COUNT - 1, Math.floor(pct * COUNT * 0.999));
 
-                    <div class="players-section">
-                        <h4>교대 선수 (${subPlayers.length}명)</h4>
-                `;
+  if (idx !== currentIdx) {
+    currentIdx = idx;
 
-                if (subPlayers.length > 0) {
-                    html += '<div class="player-list">';
-                    subPlayers.forEach(player => {
-                        html += `
-                            <div class="player-item">
-                                <div class="player-number">${teamLogo || player.number}</div>
-                                <div class="player-name">${player.name}</div>
-                            </div>
-                        `;
-                    });
-                    html += '</div>';
-                } else {
-                    html += '<p style="color: #999; text-align: center; padding: 10px;">교대 선수가 없습니다.</p>';
-                }
+    // update cards: for i:
+    //   i < idx  → 'out'
+    //   i === idx → 'active'
+    //   i === idx+1 → 'stack-1'
+    //   i === idx+2 → 'stack-2'
+    //   else → 'hidden'
+    featureCards.forEach((c, i) => {
+      let state;
+      if (i < idx) state = 'out';
+      else if (i === idx) state = 'active';
+      else if (i === idx + 1) state = 'stack-1';
+      else if (i === idx + 2) state = 'stack-2';
+      else state = 'hidden';
+      c.setAttribute('data-state', state);
+    });
 
-                html += '</div>';
+    // update text panels
+    featurePanels.forEach((p, i) => {
+      p.classList.toggle('active', i === idx);
+    });
 
-                modalBody.innerHTML = html;
-            } else {
-                modalBody.innerHTML = `
-                    <p class="no-team-message">
-                        저장된 팀이 없습니다.<br><br>
-                        먼저 팀을 구성해주세요.
-                    </p>
-                `;
-            }
+    // update progress segs
+    progressSegs.forEach((s, i) => {
+      s.classList.remove('active', 'done');
+      if (i < idx) s.classList.add('done');
+      else if (i === idx) s.classList.add('active');
+    });
+  }
+}
+window.addEventListener('scroll', updateFeatures, { passive: true });
+window.addEventListener('resize', updateFeatures);
+updateFeatures();
 
-            modal.style.display = 'block';
-        }
+/* ===========================================
+   REVEAL ON SCROLL
+=========================================== */
+const io = new IntersectionObserver((entries) => {
+  entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
-        // 모달 닫기
-        function closeModal() {
-            document.getElementById('myTeamModal').style.display = 'none';
-        }
+/* ===========================================
+   PROMO GIANT WORDMARK — scroll-driven emphasis
+=========================================== */
+(() => {
+  // promo-giant scroll emphasis removed; nothing to do
+})();
 
-        // 팀 수정하기
-        function editTeam() {
-            closeModal();
-            location.href = 'field.html';
-        }
+/* ===========================================
+   NAV — MY TEAM MODAL (kept from original)
+=========================================== */
+function showMyTeam(event) {
+  event.preventDefault();
+  const savedData = localStorage.getItem('teamSetup');
+  const modal = document.getElementById('myTeamModal');
+  const modalBody = document.getElementById('modalBody');
 
-        // 모달 외부 클릭 시 닫기
-        window.onclick = function(event) {
-            const modal = document.getElementById('myTeamModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        }
-    </script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="auth.js"></script>
+  if (savedData) {
+    const data = JSON.parse(savedData);
+    const onField = data.players.filter(p => p.onField);
+    const subs    = data.players.filter(p => !p.onField);
+
+    const teamInfo = localStorage.getItem('teamInfo');
+    let teamLogo = '';
+    if (teamInfo) {
+      const info = JSON.parse(teamInfo);
+      if (info.logo) teamLogo = `<img src="${info.logo}" alt="" class="team-logo">`;
+    }
+
+    let html = `
+      <div class="team-info-box">
+        <h3>${teamLogo} ${data.teamName}</h3>
+        <p>Field: <span class="player-count">${onField.length}</span></p>
+        <p>Subs: <span class="player-count">${subs.length}</span></p>
+        <p>Total: <span class="player-count">${data.players.length}</span></p>
+      </div>
+      <div class="players-section">
+        <h4>Field — ${onField.length}</h4>
+        <div class="player-list">
+          ${onField.map(p => `<div class="player-item"><div class="player-number">${p.number}</div><div>${p.name}</div></div>`).join('') || '<p class="no-team-message">—</p>'}
+        </div>
+      </div>
+      <div class="players-section">
+        <h4>Subs — ${subs.length}</h4>
+        <div class="player-list">
+          ${subs.map(p => `<div class="player-item"><div class="player-number">${p.number}</div><div>${p.name}</div></div>`).join('') || '<p class="no-team-message">—</p>'}
+        </div>
+      </div>
+    `;
+    modalBody.innerHTML = html;
+  } else {
+    modalBody.innerHTML = `<p class="no-team-message">저장된 팀이 없습니다.<br><br>먼저 팀을 구성해주세요.</p>`;
+  }
+  modal.style.display = 'block';
+}
+function closeModal() { document.getElementById('myTeamModal').style.display = 'none'; }
+function editTeam() { closeModal(); location.href = 'field.html'; }
+window.addEventListener('click', (e) => {
+  if (e.target.id === 'myTeamModal') closeModal();
+});
+
+function handleSoccerBtn() {
+  const hasTeam = localStorage.getItem('teamSetup') || localStorage.getItem('teamInfo');
+  if (hasTeam) {
+    const ok = confirm('이미 팀이 있습니다.\n새로운 팀을 만드시겠습니까?\n(기존 팀을 삭제하고 새로 시작합니다. 기록은 유지됩니다.)');
+    if (ok) location.href = 'team-info.html';
+  } else {
+    location.href = 'team.html';
+  }
+}
+
+/* ===========================================
+   TWEAKS — theme switcher
+=========================================== */
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "theme": "pitch"
+}/*EDITMODE-END*/;
+
+const THEMES = {
+  pitch:    { accent: '#5ba83f', contrast: '#ffffff' },
+  electric: { accent: '#2a6cff', contrast: '#ffffff' },
+  fire:     { accent: '#ff4a28', contrast: '#ffffff' }
+};
+
+function setTheme(name) {
+  const t = THEMES[name];
+  if (!t) return;
+  document.documentElement.style.setProperty('--accent', t.accent);
+  document.documentElement.style.setProperty('--accent-contrast', t.contrast);
+  document.querySelectorAll('.tweak-swatch').forEach(el => {
+    el.classList.toggle('active', el.dataset.theme === name);
+  });
+  // persist
+  window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { theme: name } }, '*');
+}
+// init from defaults
+setTheme(TWEAK_DEFAULTS.theme);
+
+/* tweaks panel protocol */
+const tweaksPanel = document.getElementById('tweaksPanel');
+function openTweaks()  { tweaksPanel.classList.add('open'); }
+function closeTweaks() {
+  tweaksPanel.classList.remove('open');
+  window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+}
+window.addEventListener('message', (e) => {
+  const d = e.data || {};
+  if (d.type === '__activate_edit_mode') openTweaks();
+  if (d.type === '__deactivate_edit_mode') closeTweaks();
+});
+window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+</script>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>
