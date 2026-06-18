@@ -1015,136 +1015,6 @@
     transform: translateY(0);
   }
 
-  /* ---------- modal (from original) ---------- */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,10,10,0.6);
-    z-index: 1000;
-    animation: fadeIn 0.3s ease-out;
-  }
-  .modal-content {
-    background: var(--paper);
-    margin: 6% auto;
-    padding: 32px;
-    border-radius: 4px;
-    max-width: 560px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    border-top: 4px solid var(--accent);
-  }
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--line);
-  }
-  .modal-header span {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 20px;
-    letter-spacing: -0.01em;
-    text-transform: uppercase;
-  }
-  .modal-close-x {
-    width: 32px; height: 32px;
-    background: var(--paper-2);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--ink);
-  }
-  .modal-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 24px;
-  }
-  .modal-buttons button {
-    padding: 12px 20px;
-    border: 1px solid var(--ink);
-    font-family: 'Archivo', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    border-radius: 2px;
-    cursor: pointer;
-  }
-  .modal-close {
-    background: var(--paper);
-    color: var(--ink);
-  }
-  .modal-edit {
-    background: var(--ink);
-    color: #fff;
-  }
-  .team-info-box {
-    background: var(--paper-2);
-    padding: 18px;
-    border-left: 4px solid var(--accent);
-    margin-bottom: 18px;
-  }
-  .team-info-box h3 {
-    font-family: 'Archivo Black', sans-serif;
-    font-size: 16px;
-    letter-spacing: 0.05em;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    display: flex; align-items: center; gap: 10px;
-  }
-  .team-logo {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--accent);
-  }
-  .team-info-box p {
-    font-size: 13px;
-    margin: 4px 0;
-    color: var(--ink-soft);
-  }
-  .player-count { color: var(--accent); font-weight: 700; }
-  .players-section { margin-bottom: 16px; }
-  .players-section h4 {
-    font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding-bottom: 8px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--line);
-  }
-  .player-list { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
-  .player-item {
-    display: flex; align-items: center;
-    padding: 8px 12px;
-    background: var(--paper-2);
-    border-left: 3px solid var(--accent);
-    font-size: 13px;
-  }
-  .player-item .player-number {
-    width: 28px; height: 28px;
-    margin-right: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Space Mono', monospace;
-    font-weight: 700;
-  }
-  .no-team-message {
-    color: var(--muted);
-    text-align: center;
-    padding: 40px 20px;
-    font-style: italic;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-  }
-
   /* ---------- responsive ---------- */
   @media (max-width: 900px) {
     .nav { padding: 14px 18px; }
@@ -1225,6 +1095,7 @@
   }
 
 </style>
+  <script src="bg-random.js"></script>
 </head>
 <body>
 
@@ -1238,7 +1109,7 @@
   </a>
   <div class="nav-links">
     <a href="records.html">Records</a>
-    <a href="#" onclick="showMyTeam(event)">My Team</a>
+    <a href="field.html">My Team</a>
     <a href="team-info.html">Edit Team</a>
     <a href="login.html" class="nav-cta">Login</a>
   </div>
@@ -1415,21 +1286,6 @@
   </div>
 </section>
 
-<!-- ===== modal (nav: My Team) ===== -->
-<div id="myTeamModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <span>My Team</span>
-      <button class="modal-close-x" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-buttons">
-      <button class="modal-close" onclick="closeModal()">Close</button>
-      <button class="modal-edit" onclick="editTeam()">Edit →</button>
-    </div>
-  </div>
-</div>
-
 <!-- ===== tweaks panel ===== -->
 <div class="tweaks" id="tweaksPanel">
   <h5>
@@ -1542,64 +1398,10 @@ document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
   // promo-giant scroll emphasis removed; nothing to do
 })();
 
-/* ===========================================
-   NAV — MY TEAM MODAL (kept from original)
-=========================================== */
-function showMyTeam(event) {
-  event.preventDefault();
-  const savedData = localStorage.getItem('teamSetup');
-  const modal = document.getElementById('myTeamModal');
-  const modalBody = document.getElementById('modalBody');
-
-  if (savedData) {
-    const data = JSON.parse(savedData);
-    const onField = data.players.filter(p => p.onField);
-    const subs    = data.players.filter(p => !p.onField);
-
-    const teamInfo = localStorage.getItem('teamInfo');
-    let teamLogo = '';
-    if (teamInfo) {
-      const info = JSON.parse(teamInfo);
-      if (info.logo) teamLogo = `<img src="${info.logo}" alt="" class="team-logo">`;
-    }
-
-    let html = `
-      <div class="team-info-box">
-        <h3>${teamLogo} ${data.teamName}</h3>
-        <p>Field: <span class="player-count">${onField.length}</span></p>
-        <p>Subs: <span class="player-count">${subs.length}</span></p>
-        <p>Total: <span class="player-count">${data.players.length}</span></p>
-      </div>
-      <div class="players-section">
-        <h4>Field — ${onField.length}</h4>
-        <div class="player-list">
-          ${onField.map(p => `<div class="player-item"><div class="player-number">${p.number}</div><div>${p.name}</div></div>`).join('') || '<p class="no-team-message">—</p>'}
-        </div>
-      </div>
-      <div class="players-section">
-        <h4>Subs — ${subs.length}</h4>
-        <div class="player-list">
-          ${subs.map(p => `<div class="player-item"><div class="player-number">${p.number}</div><div>${p.name}</div></div>`).join('') || '<p class="no-team-message">—</p>'}
-        </div>
-      </div>
-    `;
-    modalBody.innerHTML = html;
-  } else {
-    modalBody.innerHTML = `<p class="no-team-message">저장된 팀이 없습니다.<br><br>먼저 팀을 구성해주세요.</p>`;
-  }
-  modal.style.display = 'block';
-}
-function closeModal() { document.getElementById('myTeamModal').style.display = 'none'; }
-function editTeam() { closeModal(); location.href = 'field.html'; }
-window.addEventListener('click', (e) => {
-  if (e.target.id === 'myTeamModal') closeModal();
-});
-
 function handleSoccerBtn() {
   const hasTeam = localStorage.getItem('teamSetup') || localStorage.getItem('teamInfo');
   if (hasTeam) {
-    const ok = confirm('이미 팀이 있습니다.\n새로운 팀을 만드시겠습니까?\n(기존 팀을 삭제하고 새로 시작합니다. 기록은 유지됩니다.)');
-    if (ok) location.href = 'team-info.html';
+    location.href = 'field.html';
   } else {
     location.href = 'team.html';
   }

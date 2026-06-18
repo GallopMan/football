@@ -244,20 +244,17 @@
         }
 
         .season-item.active {
-            background: rgba(124, 185, 122, 0.15);
-            
-            box-shadow:
-                inset 0 0 15px rgba(124,185,122,0.5),
-                inset 0 0 40px rgba(124,185,122,0.25);
-            transform: translateX(6px) scale(1.01);
+            background: #eaf0fa;
+            border-color: rgba(28, 109, 255, 0.35);
+            transform: translateX(4px);
         }
 
         .season-item.active .season-item-name {
-            color: #2d6e2b;
+            color: #1c6dff;
         }
 
         .season-item.active .season-item-date {
-            color: #4a8f48;
+            color: #6b6b6b;
         }
 
         .season-item-info {
@@ -943,7 +940,7 @@
         .match-share-card {
             position: relative;
             width: 100%;
-            padding-bottom: 100%;
+            padding-bottom: 125%;
             border-radius: 8px;
             overflow: hidden;
             /* 기본 배경색 (이미지 없을 때) - 색상코드 변경 가능 */
@@ -983,7 +980,54 @@
             height: 100%;
             object-fit: cover;
             z-index: 1;
+            transform-origin: center center;
+            cursor: grab;
+            will-change: transform;
         }
+        .match-share-bg.dragging { cursor: grabbing; }
+
+        /* 배경 위치/확대 컨트롤 */
+        .bg-pan-controls {
+            background: #f5f7fb;
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-family: 'Space Mono', monospace;
+        }
+        .bg-pan-hint {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(10,10,10,0.4);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .bg-pan-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .bg-pan-row span {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(10,10,10,0.5);
+            white-space: nowrap;
+        }
+        .bg-pan-row input[type=range] { flex: 1; accent-color: #1c6dff; }
+        .bg-pan-row button {
+            padding: 5px 10px;
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: #e8e8e8;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .bg-pan-row button:hover { background: #d0d0d0; }
 
         /* ========== 오버레이 (배경 위 어두운 막) ========== */
         .match-share-overlay {
@@ -1634,7 +1678,6 @@
             --gm-accent: #f5f5f5;
             --gm-accent-hover: #e0e0e0;
         }
-        body { --gm-bg: url('assets/bg-records.png'); }
         .container { max-width: 1100px; padding-top: 80px; }
 
         /* === cards (white on hero background) === */
@@ -1750,11 +1793,11 @@
             border-color: rgba(28, 109, 255, 0.30) !important;
         }
         .season-item.active {
-            background: rgba(10, 10, 10, 0.06) !important;
-            border-color: rgba(10, 10, 10, 0.25) !important;
+            background: #eaf0fa !important;
+            border-color: rgba(28, 109, 255, 0.35) !important;
         }
         .season-item-name { font-family: 'Archivo Black', sans-serif !important; color: var(--gm-ink) !important; }
-        .season-item.active .season-item-name { color: var(--gm-accent) !important; }
+        .season-item.active .season-item-name { color: var(--gm-blue) !important; }
         .season-item-date { font-family: 'Space Mono', monospace !important; color: var(--gm-muted) !important; }
         .btn-delete { background: rgba(255, 80, 80, 0.12) !important; color: #d93636 !important; border: none !important; }
         .btn-delete:hover { background: rgba(255, 80, 80, 0.22) !important; }
@@ -1839,7 +1882,7 @@
         .layout-btn, .font-btn { background: #ffffff !important; border: none !important; color: var(--gm-ink-soft) !important; }
         .layout-btn:hover, .font-btn:hover { background: #eaf0fa !important; color: var(--gm-ink) !important; }
         .layout-btn.active, .font-btn.active { background: var(--gm-accent) !important; border: none !important; color: #1a1a1a !important; }
-        .opponent-logo-btn { background: rgba(10, 10, 10, 0.04) !important; border: 1px dashed rgba(10, 10, 10, 0.25) !important; color: var(--gm-accent) !important; }
+        .opponent-logo-btn { background: rgba(10, 10, 10, 0.04) !important; border: 1px dashed rgba(10, 10, 10, 0.25) !important; color: #0a0a0a !important; }
         .opponent-logo-btn:hover { background: rgba(10, 10, 10, 0.08) !important; border-color: var(--gm-accent) !important; }
         .color-btn.active { border-color: var(--gm-accent) !important; box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.15) !important; }
         .score-btn { background: var(--gm-blue) !important; font-family: 'Archivo Black', sans-serif !important; }
@@ -1854,6 +1897,7 @@
         .no-team-message a:hover { background: #d8d8d8 !important; }
 
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <!-- top nav (shared with index) -->
@@ -1863,7 +1907,7 @@
         </a>
         <div class="gm-nav-links">
             <a href="records.html" class="active">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html">My Team</a>
             <a href="team-info.html">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -1950,6 +1994,21 @@
     <div class="success-message" id="successMessage">저장되었습니다</div>
 
     <!-- 경기 상세 모달 -->
+    <!-- 선수 기록 우클릭 메뉴 -->
+    <div id="recordContextMenu" style="
+        position:fixed; z-index:9999; background:#fff;
+        border:1px solid rgba(0,0,0,0.12); border-radius:8px;
+        box-shadow:0 6px 20px rgba(0,0,0,0.15); padding:4px 0;
+        min-width:130px; display:none;">
+        <button onclick="deletePlayerRecord()" style="
+            display:block; width:100%; padding:9px 16px;
+            background:none; border:none; text-align:left;
+            font-size:13px; cursor:pointer; color:#d93636;
+            font-family:'Archivo',sans-serif;">
+            기록 삭제
+        </button>
+    </div>
+
     <div id="matchDetailModal" class="match-detail-modal">
         <div class="match-detail-content">
             <div class="match-detail-header">인스타 경기 결과 만들기</div>
@@ -1998,7 +2057,7 @@
                 </div>
             </div>
 
-            <!-- 인스타 피드 카드 (1:1 비율) -->
+            <!-- 공유 카드 (4:5 비율) -->
             <div class="match-share-card" id="matchShareCard">
                 <img id="shareBgImage" class="match-share-bg" style="display: none;">
                 <div class="match-share-overlay" id="shareOverlay"></div>
@@ -2008,8 +2067,19 @@
                 </div>
             </div>
 
+            <!-- 배경 위치/확대 조정 컨트롤 -->
+            <div class="bg-pan-controls" id="bgPanControls" style="display:none;">
+                <div class="bg-pan-hint">드래그로 배경 위치 조정 · 핀치 또는 슬라이더로 확대</div>
+                <div class="bg-pan-row">
+                    <span>확대</span>
+                    <input type="range" id="bgZoomSlider" min="100" max="300" value="100" oninput="applyBgTransform()">
+                    <button onclick="resetBgPan()">초기화</button>
+                </div>
+            </div>
+
             <div class="match-detail-buttons">
                 <button class="btn-share-image" onclick="shareAsImage()">이미지로 공유</button>
+                <button class="btn-delete" onclick="deleteCurrentMatch()">삭제</button>
                 <button class="btn-close-detail" onclick="closeMatchDetailModal()">닫기</button>
             </div>
         </div>
@@ -2072,6 +2142,12 @@
         window.addEventListener('load', function() {
             loadTeamData();
             loadSeasons();
+            // 마지막 선택 시즌 복원
+            const savedSeasonId = localStorage.getItem('currentSeasonId');
+            if (savedSeasonId) {
+                const found = seasons.find(s => s.id === savedSeasonId);
+                if (found) selectSeason(savedSeasonId);
+            }
             renderUI();
         });
 
@@ -2103,7 +2179,16 @@
         }
 
         // 시즌 생성
+        function requireTeam() {
+            if (!currentTeam) {
+                alert('팀을 먼저 만들어주세요!\n메인 화면에서 "축구팀 꾸리기"로 팀을 생성할 수 있습니다.');
+                return false;
+            }
+            return true;
+        }
+
         function createSeason() {
+            if (!requireTeam()) return;
             const name = document.getElementById('seasonName').value.trim();
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
@@ -2163,10 +2248,19 @@
         // 시즌 선택
         function selectSeason(seasonId) {
             currentSeasonId = seasonId;
+            localStorage.setItem('currentSeasonId', seasonId);
             const season = seasons.find(s => s.id === seasonId);
 
             if (season) {
-                tempRecords = JSON.parse(JSON.stringify(season.records));
+                tempRecords = JSON.parse(JSON.stringify(season.records || {}));
+                // 이름 필드만 보강 (없는 선수를 새로 추가하지 않음 — 삭제한 선수가 복구되는 문제 방지)
+                if (currentTeam && currentTeam.players) {
+                    currentTeam.players.forEach(p => {
+                        if (tempRecords[p.number] && !tempRecords[p.number].name) {
+                            tempRecords[p.number].name = p.name;
+                        }
+                    });
+                }
                 isEditMode = false;
                 showAllPlayers = false;
                 const editBtn = document.getElementById('editBtn');
@@ -2193,6 +2287,7 @@
 
                 if (currentSeasonId === seasonId) {
                     currentSeasonId = null;
+                    localStorage.removeItem('currentSeasonId');
                     tempRecords = {};
                         const titleEl = document.getElementById('seasonTitleDisplay');
                     if (titleEl) titleEl.style.display = 'none';
@@ -2253,9 +2348,11 @@
 
             const teamInfo = localStorage.getItem('teamInfo');
             let logoSrc = '';
+            let displayName = currentTeam.teamName;
             if (teamInfo) {
                 const info = JSON.parse(teamInfo);
                 if (info.logo) logoSrc = info.logo;
+                if (info.teamName) displayName = info.teamName;
             }
 
             const logoAreaHtml = logoSrc
@@ -2267,7 +2364,7 @@
                 <div class="team-info-display">
                     ${logoAreaHtml}
                     <div class="team-info-text">
-                        <h2>${currentTeam.teamName}</h2>
+                        <h2>${displayName}</h2>
                         <p>선발: <strong>${starterPlayers.length}명</strong></p>
                         <p>교체: <strong>${subPlayers.length}명</strong></p>
                         <p>후보: <strong>${reservePlayers.length}명</strong></p>
@@ -2290,7 +2387,7 @@
 
         // 선수 기록 렌더링 (테이블)
         function renderPlayerRecords() {
-            if (!currentSeasonId || Object.keys(tempRecords).length === 0) {
+            if (!currentSeasonId) {
                 document.getElementById('playersContainer').innerHTML = `
                     <p style="text-align: center; padding: 40px 20px; color: #999;">
                         시즌을 선택해주세요.
@@ -2298,10 +2395,25 @@
                 `;
                 return;
             }
+            if (!currentTeam || !currentTeam.players || currentTeam.players.length === 0) {
+                document.getElementById('playersContainer').innerHTML = `
+                    <p style="text-align: center; padding: 40px 20px; color: #999;">
+                        등록된 선수가 없습니다.
+                    </p>
+                `;
+                return;
+            }
 
-            const fieldPlayers = currentTeam.players.filter(p => p.onField);
-            const benchPlayers = currentTeam.players.filter(p => !p.onField);
-            let allPlayers = [...fieldPlayers, ...benchPlayers];
+            // tempRecords에 있는 모든 선수가 기준 (삭제 여부 무관)
+            const rosterMap = {};
+            if (currentTeam && currentTeam.players) {
+                currentTeam.players.forEach(p => { rosterMap[p.number] = p.name; });
+            }
+            let allPlayers = Object.keys(tempRecords).map(pid => {
+                const rec = tempRecords[pid];
+                const name = rec.name || rosterMap[pid] || rosterMap[Number(pid)] || '';
+                return { number: Number(pid), name };
+            }).filter(p => p.name);
 
             // 정렬
             if (currentSortColumn) {
@@ -2353,7 +2465,7 @@
                     </td>`;
 
                 html += `
-                    <tr class="player-row${isEditMode ? ' editing-row' : ''}" id="row-${pid}">
+                    <tr class="player-row${isEditMode ? ' editing-row' : ''}" id="row-${pid}" oncontextmenu="openRecordMenu(event, ${pid})">
                         <td class="rank-cell ${rankClass}">${rankDisplay}</td>
                         <td class="name-cell">${player.name}</td>
                         ${statCell('matches', record.matches)}
@@ -2472,6 +2584,7 @@
 
         // 경기 추가 모달 열기
         function openMatchModal() {
+            if (!requireTeam()) return;
             if (!currentSeasonId) {
                 alert('시즌을 먼저 선택해주세요.');
                 return;
@@ -2661,6 +2774,7 @@
         // === 경기 상세 모달 관련 함수 ===
 
         let currentMatchData = null; // 현재 선택된 경기 데이터
+        let currentMatchId = null; // 현재 선택된 경기 ID
         let currentTextColor = 'white'; // 현재 글씨 색상
         let currentFont = 'oswald'; // 현재 폰트
         let currentLayout = 1; // 현재 레이아웃 (1: 기본, 2: 로고)
@@ -2753,6 +2867,8 @@
             const match = season.matches.find(m => m.id === matchId);
             if (!match) return;
 
+            currentMatchId = matchId;
+
             // 팀 정보 가져오기
             const teamInfo = localStorage.getItem('teamInfo');
             let teamName = currentTeam ? currentTeam.teamName : '우리 팀';
@@ -2814,6 +2930,8 @@
             // 배경 이미지 초기화
             document.getElementById('shareBgImage').style.display = 'none';
             document.getElementById('shareBgImage').src = '';
+            document.getElementById('bgPanControls').style.display = 'none';
+            resetBgPan();
 
             // 기본 폰트(Oswald) 적용
             const shareContent = document.getElementById('shareContent');
@@ -2888,39 +3006,149 @@
                 const bgImage = document.getElementById('shareBgImage');
                 bgImage.src = e.target.result;
                 bgImage.style.display = 'block';
+                resetBgPan();
+                document.getElementById('bgPanControls').style.display = 'block';
             };
             reader.readAsDataURL(file);
+        }
+
+        // 선수 기록 우클릭 메뉴
+        let recordMenuTargetPid = null;
+        function openRecordMenu(e, pid) {
+            e.preventDefault();
+            recordMenuTargetPid = pid;
+            const menu = document.getElementById('recordContextMenu');
+            menu.style.display = 'block';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top  = e.clientY + 'px';
+        }
+        function deletePlayerRecord() {
+            if (recordMenuTargetPid === null) return;
+            const season = seasons.find(s => s.id === currentSeasonId);
+            if (season && season.records) {
+                delete season.records[recordMenuTargetPid];
+                delete tempRecords[recordMenuTargetPid];
+                localStorage.setItem('allSeasons', JSON.stringify(seasons));
+                renderPlayerRecords();
+            }
+            document.getElementById('recordContextMenu').style.display = 'none';
+            recordMenuTargetPid = null;
+        }
+        document.addEventListener('click', () => {
+            const menu = document.getElementById('recordContextMenu');
+            if (menu) menu.style.display = 'none';
+        });
+
+        // 경기 삭제
+        function deleteCurrentMatch() {
+            if (!currentMatchId) return;
+            if (!confirm('이 경기 기록을 삭제할까요?')) return;
+            const season = seasons.find(s => s.id === currentSeasonId);
+            if (!season || !season.matches) return;
+            season.matches = season.matches.filter(m => m.id !== currentMatchId);
+            localStorage.setItem('allSeasons', JSON.stringify(seasons));
+            closeMatchDetailModal();
+            renderMatchRecords();
         }
 
         // 경기 상세 모달 닫기
         function closeMatchDetailModal() {
             document.getElementById('matchDetailModal').style.display = 'none';
             currentMatchData = null;
+            currentMatchId = null;
         }
+
+        // 배경 이미지 팬/줌 컨트롤
+        let bgPanX = 0, bgPanY = 0;
+        let bgDragging = false;
+        let bgDragLast = { x: 0, y: 0 };
+
+        function initBgPan() {
+            const card = document.getElementById('matchShareCard');
+            card.addEventListener('mousedown', (e) => {
+                const bg = document.getElementById('shareBgImage');
+                if (bg.style.display === 'none') return;
+                bgDragging = true;
+                bgDragLast = { x: e.clientX, y: e.clientY };
+                bg.classList.add('dragging');
+                e.preventDefault();
+            });
+            document.addEventListener('mousemove', (e) => {
+                if (!bgDragging) return;
+                bgPanX += e.clientX - bgDragLast.x;
+                bgPanY += e.clientY - bgDragLast.y;
+                bgDragLast = { x: e.clientX, y: e.clientY };
+                applyBgTransform();
+            });
+            document.addEventListener('mouseup', () => {
+                if (!bgDragging) return;
+                bgDragging = false;
+                document.getElementById('shareBgImage').classList.remove('dragging');
+            });
+            card.addEventListener('touchstart', (e) => {
+                const bg = document.getElementById('shareBgImage');
+                if (bg.style.display === 'none') return;
+                const t = e.touches[0];
+                bgDragging = true;
+                bgDragLast = { x: t.clientX, y: t.clientY };
+                e.preventDefault();
+            }, { passive: false });
+            document.addEventListener('touchmove', (e) => {
+                if (!bgDragging) return;
+                const t = e.touches[0];
+                bgPanX += t.clientX - bgDragLast.x;
+                bgPanY += t.clientY - bgDragLast.y;
+                bgDragLast = { x: t.clientX, y: t.clientY };
+                applyBgTransform();
+                e.preventDefault();
+            }, { passive: false });
+            document.addEventListener('touchend', () => { bgDragging = false; });
+        }
+
+        function applyBgTransform() {
+            const bg = document.getElementById('shareBgImage');
+            const zoom = document.getElementById('bgZoomSlider')
+                ? parseInt(document.getElementById('bgZoomSlider').value) / 100
+                : 1;
+            bg.style.transform = `translate(${bgPanX}px, ${bgPanY}px) scale(${zoom})`;
+        }
+
+        function resetBgPan() {
+            bgPanX = 0; bgPanY = 0;
+            const slider = document.getElementById('bgZoomSlider');
+            if (slider) slider.value = 100;
+            const bg = document.getElementById('shareBgImage');
+            if (bg) bg.style.transform = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', initBgPan);
 
         // 이미지로 공유
         function shareAsImage() {
             const shareCard = document.getElementById('matchShareCard');
             const btn = document.querySelector('.btn-share-image');
 
-            // 버튼 비활성화 (중복 클릭 방지)
             btn.disabled = true;
             btn.textContent = '저장 중...';
 
+            const w = shareCard.offsetWidth;
+            const h = shareCard.offsetHeight;
+
             html2canvas(shareCard, {
-                scale: 2,  // 고해상도 (1080x1080 출력)
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
-                backgroundColor: null
+                backgroundColor: null,
+                width: w,
+                height: h,
+                imageTimeout: 15000
             }).then(canvas => {
-                // 다운로드 링크 생성
                 const link = document.createElement('a');
                 const date = new Date().toISOString().slice(0, 10);
                 link.download = `경기결과_${date}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
 
-                // 버튼 복구
                 btn.disabled = false;
                 btn.textContent = '이미지로 공유';
             }).catch(err => {

@@ -256,7 +256,6 @@
         }
 
         /* === gm light theme overrides === */
-        body { --gm-bg: url('assets/bg-team.png'); }
         .page-container { padding-top: 100px !important; }
         .page-title { color: var(--gm-ink) !important; font-family: 'Archivo Black','Pretendard',sans-serif !important; }
         .page-subtitle { font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; color: var(--gm-muted) !important; font-size:11px !important; }
@@ -280,14 +279,48 @@
         .delete-team-btn:hover { background:rgba(255,80,80,0.20) !important; }
         .logo-preview { border:2px dashed var(--gm-line-strong) !important; background:#f7f9fc !important; border-radius:12px !important; }
         .success-message { background: var(--gm-ink) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.15em; }
+
+        /* team hero */
+        .team-hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 40px;
+        }
+        .team-hero-logo {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: #fff;
+            box-shadow: 0 4px 18px rgba(0,10,40,0.12);
+        }
+        .team-hero-name {
+            font-family: 'Archivo Black', 'Pretendard', sans-serif;
+            font-size: clamp(28px, 5vw, 48px);
+            color: var(--gm-ink);
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+        .team-hero-empty {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--gm-muted);
+            text-align: center;
+            margin-bottom: 40px;
+        }
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <nav class="gm-nav">
         <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
         <div class="gm-nav-links">
             <a href="records.html">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html">My Team</a>
             <a href="team-info.html" class="active">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -296,6 +329,9 @@
 
 
         <div class="page-container">
+            <!-- 팀 히어로 -->
+            <div id="teamHero"></div>
+
             <!-- 헤더 -->
             <div class="page-header">
                 <div class="page-title">팀 정보 수정</div>
@@ -408,8 +444,24 @@
 
         function loadTeamInfo() {
             const savedInfo = localStorage.getItem('teamInfo');
+            const heroEl = document.getElementById('teamHero');
+            if (!savedInfo) {
+                heroEl.innerHTML = `<div class="team-hero-empty">아직 팀 정보가 없습니다 — 아래에서 입력하세요</div>`;
+                return;
+            }
+
             if (savedInfo) {
                 const info = JSON.parse(savedInfo);
+
+                // 팀 히어로 렌더링
+                const logoHtml = info.logo
+                    ? `<img src="${info.logo}" alt="팀 로고" class="team-hero-logo">`
+                    : '';
+                heroEl.innerHTML = `
+                    <div class="team-hero">
+                        ${logoHtml}
+                        <div class="team-hero-name">${info.teamName || ''}</div>
+                    </div>`;
 
                 // 로고
                 if (info.logo) {
@@ -535,6 +587,11 @@
 
             // localStorage에 저장
             localStorage.setItem('teamInfo', JSON.stringify(teamInfo));
+
+            // 히어로 업데이트
+            const heroEl = document.getElementById('teamHero');
+            const logoHtml = logoDataUrl ? `<img src="${logoDataUrl}" alt="팀 로고" class="team-hero-logo">` : '';
+            heroEl.innerHTML = `<div class="team-hero">${logoHtml}<div class="team-hero-name">${teamName}</div></div>`;
 
             // 성공 메시지 표시
             const message = document.getElementById('successMessage');

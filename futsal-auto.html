@@ -300,7 +300,6 @@
         .player-stars .star { cursor: pointer; font-size: 18px; }
 
         /* === gm light theme overrides === */
-        body { --gm-bg: url('assets/bg-futsal.png'); }
         .top-menu { display:none !important; }
         .container { padding-top:70px; }
         .page-header { background:transparent !important; }
@@ -327,13 +326,14 @@
         .star-rating-label { font-family:'Space Mono',monospace !important; color:var(--gm-muted) !important; }
         .total-count { color:var(--gm-muted) !important; }
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <nav class="gm-nav">
         <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
         <div class="gm-nav-links">
             <a href="records.html">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html">My Team</a>
             <a href="team-info.html">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -342,7 +342,7 @@
         <!-- 상단 메뉴 -->
         <div class="top-menu">
             <a href="index.html">메인</a>
-            <a href="futsal.html">뒤로가기</a>
+            <a href="javascript:history.back()">뒤로가기</a>
         </div>
 
         <!-- 헤더 -->
@@ -351,15 +351,14 @@
             <div class="page-subtitle">각 선수의 실력을 별점(1~5점)으로 평가하세요</div>
         </div>
 
-        <!-- 레이아웃 -->
-        <div class="page-layout">
-        <div class="roster-panel" id="rosterPanel">
+        <!-- 기존 팀 선수 패널 (우측 고정) -->
+        <div class="roster-panel" id="rosterPanel" style="position:fixed;top:90px;right:24px;z-index:50;max-height:calc(100vh - 110px);overflow-y:auto;">
             <div class="roster-title">기존 팀 선수</div>
             <div id="rosterList"><p style="color:#999;font-size:12px;text-align:center">팀 데이터 없음</p></div>
         </div>
 
         <!-- 선수 추가 섹션 -->
-        <div class="main-content"><div class="players-container">
+        <div class="players-container">
             <div class="add-player-section">
                 <div class="add-player-title">새 선수 추가</div>
                 <div class="add-player-form">
@@ -391,11 +390,11 @@
                 </div>
             </div>
         </div>
-        </div></div><!-- /main-content /page-layout -->
 
         <!-- 다음 버튼 -->
         <div class="bottom-section">
             <button class="next-btn" id="nextBtn" onclick="goToTeamSetup()" disabled>팀 자동 분배하기</button>
+            <button class="next-btn" style="background:#f0f0f0 !important; color:#333 !important;" onclick="history.back()">뒤로가기</button>
         </div>
     </div>
 
@@ -423,6 +422,8 @@
                 el.addEventListener('dragstart', e => {
                     e.dataTransfer.setData('text/plain', el.dataset.name);
                     el.classList.add('dragging');
+                    e._dragSource = el;
+                    window.__draggedRosterEl = el;
                 });
                 el.addEventListener('dragend', () => el.classList.remove('dragging'));
             });
@@ -439,6 +440,10 @@
                 if (!name) return;
                 players.push({ number: players.length + 1, name, rating: 3 });
                 updatePlayersList();
+                if (window.__draggedRosterEl) {
+                    window.__draggedRosterEl.remove();
+                    window.__draggedRosterEl = null;
+                }
             });
         }
 

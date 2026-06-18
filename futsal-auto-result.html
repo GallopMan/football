@@ -268,7 +268,6 @@
         }
 
         /* === gm light theme overrides === */
-        body { --gm-bg: url('assets/bg-futsal.png'); }
         .top-menu { display:none !important; }
         .container { padding-top:70px; }
         .page-header { background:transparent !important; }
@@ -288,13 +287,14 @@
         .lock-btn.locked:hover { color:#4d8aff !important; }
         .star { color:#f0a925 !important; }
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <nav class="gm-nav">
         <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
         <div class="gm-nav-links">
             <a href="records.html">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html">My Team</a>
             <a href="team-info.html">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -329,6 +329,7 @@
         <!-- 버튼 -->
         <div class="bottom-section hidden" id="bottomSection">
             <button class="reshuffle-btn" onclick="reshuffleTeams()">다시 돌리기</button>
+            <button class="restart-btn save-image-btn" onclick="saveTeamsImage()">이미지로 저장</button>
             <button class="restart-btn" onclick="location.href='futsal.html'">처음으로</button>
         </div>
     </div>
@@ -551,7 +552,99 @@
             }
             return html;
         }
+
+        function saveTeamsImage() {
+            const btn = document.querySelector('.save-image-btn');
+            btn.disabled = true;
+            btn.textContent = '저장 중...';
+
+            const COLORS = { 'team-a': '#ff6b6b', 'team-b': '#4ecdc4', 'team-c': '#f0a925', 'team-d': '#5b9bff' };
+            const SCALE = 2;
+            const PAD = 28;
+            const COL_W = 240;
+            const COLS = Math.min(currentTeams.length, 2);
+            const ROW_H = 32;
+            const TITLE_H = 80;
+            const maxPlayers = Math.max(...currentTeams.map(t => t.players.length), 1);
+            const BOX_H = TITLE_H + maxPlayers * ROW_H + PAD;
+            const ROWS = Math.ceil(currentTeams.length / 2);
+            const TOTAL_W = COL_W * COLS + PAD * (COLS + 1);
+            const TOP_PAD = 56;
+            const TOTAL_H = TOP_PAD + (BOX_H + PAD) * ROWS + PAD;
+
+            const canvas = document.createElement('canvas');
+            canvas.width  = TOTAL_W  * SCALE;
+            canvas.height = TOTAL_H * SCALE;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(SCALE, SCALE);
+
+            ctx.fillStyle = '#f5f7fb';
+            ctx.fillRect(0, 0, TOTAL_W, TOTAL_H);
+
+            ctx.fillStyle = '#0a0a0a';
+            ctx.font = 'bold 20px "Space Mono", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('풋살 자동 팀 배정', TOTAL_W / 2, 36);
+
+            currentTeams.forEach((team, i) => {
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const cls = teamClasses[i];
+                const color = COLORS[cls] || '#888';
+                const bx = PAD + col * (COL_W + PAD);
+                const by = TOP_PAD + row * (BOX_H + PAD);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = 'rgba(0,10,40,0.09)';
+                ctx.shadowBlur = 12;
+                ctx.beginPath(); ctx.roundRect(bx, by, COL_W, BOX_H, 14); ctx.fill();
+                ctx.shadowBlur = 0;
+
+                ctx.fillStyle = color;
+                ctx.beginPath(); ctx.roundRect(bx, by, COL_W, 5, [14,14,0,0]); ctx.fill();
+
+                ctx.fillStyle = color;
+                ctx.font = 'bold 18px "Archivo Black", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(team.name, bx + COL_W / 2, by + 34);
+
+                ctx.fillStyle = '#888';
+                ctx.font = '11px "Space Mono", monospace';
+                ctx.fillText(`평균 ${team.avgRating}점 · ${team.players.length}명`, bx + COL_W / 2, by + 54);
+
+                ctx.strokeStyle = color + '44'; ctx.lineWidth = 1;
+                ctx.beginPath(); ctx.moveTo(bx+16, by+TITLE_H-8); ctx.lineTo(bx+COL_W-16, by+TITLE_H-8); ctx.stroke();
+
+                team.players.forEach((player, pi) => {
+                    const py = by + TITLE_H + pi * ROW_H;
+                    if (pi % 2 === 0) {
+                        ctx.fillStyle = '#f8f9fc';
+                        ctx.beginPath(); ctx.roundRect(bx+12, py, COL_W-24, ROW_H-4, 6); ctx.fill();
+                    }
+                    ctx.fillStyle = '#aaa';
+                    ctx.font = '11px "Space Mono", monospace';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(String(pi+1).padStart(2,'0'), bx+20, py+ROW_H/2+4);
+                    ctx.fillStyle = '#1a1a1a';
+                    ctx.font = '13px "Pretendard", sans-serif';
+                    ctx.fillText(player.name, bx+44, py+ROW_H/2+4);
+                    const stars = '★'.repeat(player.rating) + '☆'.repeat(5-player.rating);
+                    ctx.fillStyle = '#f0a925';
+                    ctx.font = '11px sans-serif';
+                    ctx.textAlign = 'right';
+                    ctx.fillText(stars, bx+COL_W-14, py+ROW_H/2+4);
+                });
+            });
+
+            const link = document.createElement('a');
+            link.download = `풋살팀_자동_${new Date().toISOString().slice(0, 10)}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            btn.disabled = false;
+            btn.textContent = '이미지로 저장';
+        }
     </script>
+
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="auth.js"></script>
 </body>

@@ -112,7 +112,6 @@
         }
 
         /* === gm light theme overrides === */
-        body { --gm-bg: url('assets/bg-futsal.png'); }
         .top-menu { display:none !important; }
         .main-content { padding-top:120px !important; }
         .section h2 { font-family:'Archivo Black','Pretendard',sans-serif !important; font-size:clamp(32px,5vw,56px) !important; letter-spacing:-0.02em; }
@@ -127,13 +126,14 @@
         .auto-btn:hover { background:#4d8aff !important; }
         .auto-btn:disabled, .manual-btn:disabled { background:#dfe3ea !important; color:#aab !important; box-shadow:none !important; }
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <nav class="gm-nav">
         <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
         <div class="gm-nav-links">
             <a href="records.html">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html">My Team</a>
             <a href="team-info.html">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -148,10 +148,8 @@
         <!-- 메인 콘텐츠 -->
         <div class="main-content">
             <!-- 제목 -->
-            <div class="section">
-                <h2>풋살 팀 만들기</h2>
-                <p style="font-size: 14px; color: #666; margin-top: 10px;">5vs5 풋살 경기를 위한 팀을 구성하세요</p>
-            </div>
+            <h2 style="text-align:center; margin-bottom:8px;">풋살 팀 만들기</h2>
+
 
             <!-- 팀 개수 선택 -->
             <div class="team-selection">

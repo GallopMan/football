@@ -11,20 +11,20 @@
             display: grid;
             gap: 30px;
             padding: 40px 20px;
-            max-width: 1400px;
             margin: 0 auto;
+            width: fit-content;
         }
 
         .teams-container.count-2 {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, 320px);
         }
 
         .teams-container.count-3 {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, 300px);
         }
 
         .teams-container.count-4 {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, 320px);
         }
 
         .team-box {
@@ -82,6 +82,21 @@
 
         .players-list {
             margin-bottom: 15px;
+            min-height: 60px;
+            border: 1.5px dashed rgba(10,10,10,0.15);
+            border-radius: 8px;
+            padding: 6px;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .players-list:empty::before {
+            content: '여기에 드롭하세요';
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 48px;
+            color: rgba(10,10,10,0.3);
+            font-size: 12px;
+            font-family: 'Space Mono', monospace;
         }
 
         .player-row {
@@ -198,18 +213,20 @@
             align-items: flex-start;
         }
 
-        .teams-wrapper { flex: 1; min-width: 0; }
+        .teams-wrapper { flex: 1; min-width: 0; display: flex; justify-content: center; }
 
         .roster-panel {
             width: 180px;
-            flex-shrink: 0;
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             padding: 18px;
-            margin: 0 20px 20px 0;
-            position: sticky;
-            top: 20px;
+            position: fixed;
+            top: 90px;
+            right: 24px;
+            max-height: calc(100vh - 110px);
+            overflow-y: auto;
+            z-index: 50;
         }
 
         .roster-title {
@@ -245,7 +262,6 @@
         }
 
         /* === gm light theme overrides === */
-        body { --gm-bg: url('assets/bg-futsal.png'); }
         .top-menu { display:none !important; }
         .container { padding-top:70px; }
         .page-title { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
@@ -263,19 +279,56 @@
         .add-player-btn:hover, .start-btn:hover { background:#e0e0e0 !important; color:#1a1a1a !important; box-shadow:0 8px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
         .remove-player-btn { background:rgba(255,80,80,0.12) !important; color:#d93636 !important; }
         .remove-player-btn:hover { background:rgba(255,80,80,0.24) !important; }
-        .roster-panel { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; top:90px; }
+        .roster-panel { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; }
         .roster-title { color:var(--gm-ink) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.12em; text-transform:uppercase; font-size:11px !important; border-bottom:1px solid var(--gm-line-strong) !important; }
         .roster-player { background:#f5f7fb !important; border-left:3px solid var(--gm-blue) !important; border-radius:8px !important; }
         .roster-player:hover { background:#eaf0fa !important; }
         .players-list.drag-over { outline:2px dashed var(--gm-blue) !important; background:#eaf0fa !important; }
+
+        /* 자물쇠 버튼 */
+        .row-lock-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 3px;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            transition: color 0.2s, transform 0.15s;
+        }
+        .row-lock-btn:hover { color: #999; transform: scale(1.15); }
+        .row-lock-btn.locked { color: var(--gm-blue, #1c6dff); }
+        .row-lock-btn.locked:hover { color: #4d8aff; }
+        .player-row[data-locked="true"] .player-input { background: #f0f4ff !important; }
+
+        /* 하단 버튼 */
+        .bottom-section { display: flex; gap: 14px; justify-content: center; padding: 30px; flex-wrap: wrap; }
+        .random-btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            background: var(--gm-blue, #1c6dff);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 14px rgba(28,109,255,0.25);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .random-btn:hover { background: #4d8aff; box-shadow: 0 6px 20px rgba(28,109,255,0.35); }
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <nav class="gm-nav">
         <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
         <div class="gm-nav-links">
             <a href="records.html">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html">My Team</a>
             <a href="team-info.html">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -284,7 +337,7 @@
         <!-- 상단 메뉴 -->
         <div class="top-menu">
             <a href="index.html">메인</a>
-            <a href="futsal.html">뒤로가기</a>
+            <a href="javascript:history.back()">뒤로가기</a>
         </div>
 
         <!-- 타이틀 -->
@@ -307,9 +360,11 @@
             </div>
         </div>
 
-        <!-- 시작 버튼 -->
+        <!-- 하단 버튼 -->
         <div class="bottom-section">
-            <button class="start-btn" onclick="startGame()">경기 시작</button>
+            <button class="random-btn" onclick="randomAssign()">랜덤 배정</button>
+            <button class="start-btn save-image-btn" onclick="saveAsImage()">이미지로 저장</button>
+            <button class="start-btn" onclick="history.back()">뒤로가기</button>
         </div>
     </div>
 
@@ -319,20 +374,16 @@
         let teamCount = 0;
         let teams = [];
 
-        // 페이지 로드 시 초기화
+        const LOCK_SVG   = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>';
+        const UNLOCK_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1C9.24 1 7 3.24 7 6v1H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2h-1V6c0-2.76-2.24-5-5-5zm0 2c1.66 0 3 1.34 3 3v1H9V6c0-1.66 1.34-3 3-3zm0 9c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2z"/></svg>';
+        const TRASH_SVG  = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4h6v2"/></svg>';
+
         document.addEventListener('DOMContentLoaded', function() {
-            loadRoster();
-
-            // 세션스토리지에서 팀 개수 가져오기
             teamCount = parseInt(sessionStorage.getItem('futsalTeamCount')) || 2;
-            console.log('팀 개수:', teamCount);
-
-            // 팀 컨테이너 그리드 설정
             const container = document.getElementById('teamsContainer');
             container.className = `teams-container count-${teamCount}`;
-
-            // 팀 초기화
             initializeTeams();
+            loadRoster();
         });
 
         function loadRoster() {
@@ -350,9 +401,31 @@
                 el.addEventListener('dragstart', e => {
                     e.dataTransfer.setData('text/plain', el.dataset.name);
                     el.classList.add('dragging');
+                    window.__draggedRosterEl = el;
                 });
                 el.addEventListener('dragend', () => el.classList.remove('dragging'));
             });
+        }
+
+        function createPlayerRow(teamIndex, playerNumber, playerName) {
+            const row = document.createElement('div');
+            row.className = 'player-row';
+            row.dataset.locked = 'false';
+            row.innerHTML = `
+                <button class="row-lock-btn" onclick="toggleRowLock(this)" title="팀 고정">${UNLOCK_SVG}</button>
+                <div class="player-number">${playerNumber}.</div>
+                <input type="text" class="player-input" value="${playerName || ''}" placeholder="선수 이름 입력" data-team="${teamIndex}" data-number="${playerNumber}">
+                <button class="remove-player-btn" onclick="removePlayer(this)">${TRASH_SVG}</button>
+            `;
+            return row;
+        }
+
+        function toggleRowLock(btn) {
+            const row = btn.closest('.player-row');
+            const locked = row.dataset.locked === 'true';
+            row.dataset.locked = locked ? 'false' : 'true';
+            btn.classList.toggle('locked', !locked);
+            btn.innerHTML = !locked ? LOCK_SVG : UNLOCK_SVG;
         }
 
         function setupTeamDropZone(teamIndex) {
@@ -365,119 +438,205 @@
                 const name = e.dataTransfer.getData('text/plain');
                 if (!name) return;
                 const playerCount = playersList.children.length + 1;
-                const playerRow = document.createElement('div');
-                playerRow.className = 'player-row';
-                playerRow.innerHTML = `
-                    <div class="player-number">${playerCount}.</div>
-                    <input type="text" class="player-input" value="${name}" data-team="${teamIndex}" data-number="${playerCount}">
-                    <button class="remove-player-btn" onclick="removePlayer(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4h6v2"/></svg></button>
-                `;
-                playersList.appendChild(playerRow);
+                playersList.appendChild(createPlayerRow(teamIndex, playerCount, name));
+                if (window.__draggedRosterEl) {
+                    window.__draggedRosterEl.remove();
+                    window.__draggedRosterEl = null;
+                }
             });
         }
 
         function initializeTeams() {
             const container = document.getElementById('teamsContainer');
             container.innerHTML = '';
-
             for (let i = 0; i < teamCount; i++) {
-                teams[i] = {
-                    name: teamNames[i],
-                    players: []
-                };
-
-                const teamBox = createTeamBox(i);
+                teams[i] = { name: teamNames[i], players: [] };
+                const teamBox = document.createElement('div');
+                teamBox.className = `team-box ${teamClasses[i]}`;
+                teamBox.id = `team-${i}`;
+                teamBox.innerHTML = `
+                    <div class="team-header">${teamNames[i]}</div>
+                    <div class="players-list" id="players-${i}"></div>
+                    <button class="add-player-btn" onclick="addPlayer(${i})">+ 선수 추가</button>
+                `;
                 container.appendChild(teamBox);
                 setupTeamDropZone(i);
             }
         }
 
-        function createTeamBox(teamIndex) {
-            const teamBox = document.createElement('div');
-            teamBox.className = `team-box ${teamClasses[teamIndex]}`;
-            teamBox.id = `team-${teamIndex}`;
-
-            teamBox.innerHTML = `
-                <div class="team-header">${teamNames[teamIndex]}</div>
-                <div class="players-list" id="players-${teamIndex}">
-                    <!-- 선수들이 여기에 추가됩니다 -->
-                </div>
-                <button class="add-player-btn" onclick="addPlayer(${teamIndex})">+ 선수 추가</button>
-            `;
-
-            return teamBox;
-        }
-
         function addPlayer(teamIndex) {
             const playersList = document.getElementById(`players-${teamIndex}`);
             const playerCount = playersList.children.length + 1;
-
-            const playerRow = document.createElement('div');
-            playerRow.className = 'player-row';
-            playerRow.innerHTML = `
-                <div class="player-number">${playerCount}.</div>
-                <input type="text" class="player-input" placeholder="선수 이름 입력" data-team="${teamIndex}" data-number="${playerCount}">
-                <button class="remove-player-btn" onclick="removePlayer(this)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4h6v2"/></svg></button>
-            `;
-
-            playersList.appendChild(playerRow);
+            playersList.appendChild(createPlayerRow(teamIndex, playerCount, ''));
         }
 
-        function removePlayer(btn) {
-            const playerRow = btn.parentElement;
-            const playersList = playerRow.parentElement;
-            playerRow.remove();
-
-            // 번호 재정렬
-            const rows = playersList.querySelectorAll('.player-row');
-            rows.forEach((row, index) => {
-                const numberDiv = row.querySelector('.player-number');
-                const input = row.querySelector('.player-input');
-                numberDiv.textContent = `${index + 1}.`;
-                input.dataset.number = index + 1;
+        function renumberTeam(playersList) {
+            playersList.querySelectorAll('.player-row').forEach((row, idx) => {
+                row.querySelector('.player-number').textContent = `${idx + 1}.`;
+                row.querySelector('.player-input').dataset.number = idx + 1;
             });
         }
 
-        function startGame() {
-            // 모든 팀의 선수 데이터 수집
-            const allTeams = [];
+        function removePlayer(btn) {
+            const row = btn.closest('.player-row');
+            const list = row.parentElement;
+            row.remove();
+            renumberTeam(list);
+        }
 
+        function randomAssign() {
+            const unlocked = [];
+
+            // 팀 박스에 이미 배정된 잠금 안 된 선수만 수집 후 제거
             for (let i = 0; i < teamCount; i++) {
-                const playersList = document.getElementById(`players-${i}`);
-                const inputs = playersList.querySelectorAll('.player-input');
-                const players = [];
-
-                inputs.forEach(input => {
-                    if (input.value.trim()) {
-                        players.push({
-                            number: parseInt(input.dataset.number),
-                            name: input.value.trim()
-                        });
+                const list = document.getElementById(`players-${i}`);
+                [...list.querySelectorAll('.player-row')].forEach(row => {
+                    if (row.dataset.locked !== 'true') {
+                        const name = row.querySelector('.player-input').value.trim();
+                        if (name) unlocked.push(name);
+                        row.remove();
                     }
-                });
-
-                allTeams.push({
-                    name: teamNames[i],
-                    players: players
                 });
             }
 
-            // 최소 1명 이상의 선수가 있는지 확인
-            const hasPlayers = allTeams.some(team => team.players.length > 0);
-            if (!hasPlayers) {
-                alert('최소 1개 팀에 1명 이상의 선수를 입력하세요!');
+            if (unlocked.length === 0) {
+                alert('배정할 선수가 없습니다!');
                 return;
             }
 
-            console.log('팀 데이터:', allTeams);
+            // 셔플
+            for (let i = unlocked.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [unlocked[i], unlocked[j]] = [unlocked[j], unlocked[i]];
+            }
 
-            // 세션스토리지에 저장 (일회용)
-            sessionStorage.setItem('futsalTeams', JSON.stringify(allTeams));
+            // 라운드로빈 배정
+            unlocked.forEach((name, idx) => {
+                const ti = idx % teamCount;
+                const list = document.getElementById(`players-${ti}`);
+                list.appendChild(createPlayerRow(ti, list.children.length + 1, name));
+            });
 
-            alert('경기 시작! (경기 화면은 추후 추가 예정입니다)');
-            // location.href = 'futsal-game.html'; // 추후 경기 화면으로 이동
+            // 전체 번호 재정렬
+            for (let i = 0; i < teamCount; i++) {
+                renumberTeam(document.getElementById(`players-${i}`));
+            }
+        }
+
+        function saveAsImage() {
+            const btn = document.querySelector('.save-image-btn');
+            btn.disabled = true;
+            btn.textContent = '저장 중...';
+
+            // DOM에서 팀 데이터 수집
+            const teamBoxes = document.querySelectorAll('#teamsContainer .team-box');
+            const teams = [];
+            const COLORS = { 'team-a': '#ff6b6b', 'team-b': '#4ecdc4', 'team-c': '#f0a925', 'team-d': '#5b9bff' };
+            teamBoxes.forEach(box => {
+                const cls = ['team-a','team-b','team-c','team-d'].find(c => box.classList.contains(c)) || 'team-a';
+                const title = box.querySelector('.team-header')?.textContent.trim() || '';
+                const players = [...box.querySelectorAll('.player-row')].map(row => {
+                    return row.querySelector('.player-input')?.value.trim() || row.querySelector('.player-name')?.textContent.trim() || '';
+                }).filter(n => n);
+                teams.push({ title, players, color: COLORS[cls] });
+            });
+
+            const SCALE = 2;
+            const PAD = 28;
+            const COL_W = 240;
+            const COLS = Math.min(teams.length, 2);
+            const ROWS = Math.ceil(teams.length / 2);
+            const ROW_H = 36;
+            const HEADER_H = 60;
+            const TITLE_H = 52;
+            const maxPlayers = Math.max(...teams.map(t => t.players.length), 1);
+            const BOX_H = TITLE_H + maxPlayers * ROW_H + PAD;
+            const TOTAL_W = COL_W * COLS + PAD * (COLS + 1);
+            const TOP_PAD = 56;
+            const TOTAL_H = TOP_PAD + (BOX_H + PAD) * ROWS + PAD;
+
+            const canvas = document.createElement('canvas');
+            canvas.width  = TOTAL_W  * SCALE;
+            canvas.height = TOTAL_H * SCALE;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(SCALE, SCALE);
+
+            // 배경
+            ctx.fillStyle = '#f5f7fb';
+            ctx.fillRect(0, 0, TOTAL_W, TOTAL_H);
+
+            // 상단 제목
+            ctx.fillStyle = '#0a0a0a';
+            ctx.font = 'bold 20px "Space Mono", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('풋살 팀 배정', TOTAL_W / 2, 36);
+
+            teams.forEach((team, i) => {
+                const col = i % 2;
+                const row = Math.floor(i / 2);
+                const bx = PAD + col * (COL_W + PAD);
+                const by = TOP_PAD + row * (BOX_H + PAD);
+
+                // 카드 배경
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = 'rgba(0,10,40,0.09)';
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.roundRect(bx, by, COL_W, BOX_H, 14);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // 상단 컬러 바
+                ctx.fillStyle = team.color;
+                ctx.beginPath();
+                ctx.roundRect(bx, by, COL_W, 5, [14, 14, 0, 0]);
+                ctx.fill();
+
+                // 팀 이름
+                ctx.fillStyle = team.color;
+                ctx.font = 'bold 18px "Archivo Black", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(team.title, bx + COL_W / 2, by + 36);
+
+                // 구분선
+                ctx.strokeStyle = team.color + '44';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(bx + 16, by + TITLE_H);
+                ctx.lineTo(bx + COL_W - 16, by + TITLE_H);
+                ctx.stroke();
+
+                // 선수 목록
+                team.players.forEach((name, pi) => {
+                    const py = by + TITLE_H + pi * ROW_H + 10;
+                    // 짝수 행 배경
+                    if (pi % 2 === 0) {
+                        ctx.fillStyle = '#f8f9fc';
+                        ctx.beginPath();
+                        ctx.roundRect(bx + 12, py - 2, COL_W - 24, ROW_H - 4, 6);
+                        ctx.fill();
+                    }
+                    // 번호
+                    ctx.fillStyle = '#aaa';
+                    ctx.font = '11px "Space Mono", monospace';
+                    ctx.textAlign = 'left';
+                    ctx.fillText(String(pi + 1).padStart(2, '0'), bx + 20, py + 16);
+                    // 이름
+                    ctx.fillStyle = '#1a1a1a';
+                    ctx.font = '13px "Pretendard", sans-serif';
+                    ctx.fillText(name, bx + 44, py + 16);
+                });
+            });
+
+            const link = document.createElement('a');
+            link.download = `풋살팀_${new Date().toISOString().slice(0, 10)}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            btn.disabled = false;
+            btn.textContent = '이미지로 저장';
         }
     </script>
+
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="auth.js"></script>
 </body>

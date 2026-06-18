@@ -6,6 +6,36 @@ let subPlayers = [];
 let reservePlayers = [];
 let draggedElement = null;
 let dragSource = null;
+let contextMenuTargetId = null;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const menu = document.getElementById('playerContextMenu');
+    const deleteBtn = document.getElementById('playerDeleteBtn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', () => {
+            if (contextMenuTargetId !== null) {
+                players = players.filter(p => p.id !== contextMenuTargetId);
+                fieldPlayers = fieldPlayers.filter(p => p.id !== contextMenuTargetId);
+                subPlayers = subPlayers.filter(p => p.id !== contextMenuTargetId);
+                reservePlayers = reservePlayers.filter(p => p.id !== contextMenuTargetId);
+                updateFieldPlayers();
+                updateSubPlayers();
+                updateTotalPlayers();
+                autoSave();
+                contextMenuTargetId = null;
+            }
+            menu.style.display = 'none';
+        });
+    }
+    document.addEventListener('click', () => {
+        if (menu) menu.style.display = 'none';
+    });
+    document.addEventListener('contextmenu', (e) => {
+        if (!e.target.closest('.player-circle')) {
+            if (menu) menu.style.display = 'none';
+        }
+    });
+});
 
 // 기본 포지션 (11명) - 참고용
 const defaultPositions = [
@@ -110,9 +140,7 @@ function updateSubPlayers() {
     if (!container) return;
     container.innerHTML = '';
 
-    container.appendChild(createRosterSection('선발', fieldPlayers, false));
     container.appendChild(createRosterSection('교체', subPlayers, true));
-    container.appendChild(createRosterSection('후보', reservePlayers, true));
 }
 
 // 로스터 섹션 생성
@@ -287,6 +315,18 @@ function createPlayerCircle(player) {
         circle.classList.remove('dragging');
     });
 
+    circle.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        contextMenuTargetId = player.id;
+        const menu = document.getElementById('playerContextMenu');
+        if (menu) {
+            menu.style.display = 'block';
+            menu.style.left = e.clientX + 'px';
+            menu.style.top = e.clientY + 'px';
+        }
+    });
+
     return circle;
 }
 
@@ -339,6 +379,7 @@ function setupFieldDragDrop() {
         updateFieldPlayers();
         updateSubPlayers();
         updateTotalPlayers();
+        autoSave();
     });
 
     // 선수 명단 패널 드래그 앤 드롭 (필드 → 교체)
@@ -379,6 +420,7 @@ function setupFieldDragDrop() {
         updateFieldPlayers();
         updateSubPlayers();
         updateTotalPlayers();
+        autoSave();
     });
 }
 
@@ -392,10 +434,21 @@ function addNewPlayer() {
         return;
     }
 
-    const allPlayers = [...fieldPlayers, ...subPlayers, ...reservePlayers];
-    const maxNumber = allPlayers.length > 0
-        ? Math.max(...allPlayers.map(p => p.number))
-        : 0;
+    let maxNumber = 0;
+    [...fieldPlayers, ...subPlayers, ...reservePlayers].forEach(p => {
+        const n = Number(p.number ?? p.id);
+        if (!isNaN(n) && isFinite(n)) maxNumber = Math.max(maxNumber, n);
+    });
+    // 시즌 records에 과거에 쓰인 번호도 포함 (삭제된 선수 번호 재사용 방지)
+    try {
+        const allSeasons = JSON.parse(localStorage.getItem('allSeasons') || '[]');
+        allSeasons.forEach(s => {
+            if (s.records) Object.keys(s.records).forEach(pid => {
+                const n = Number(pid);
+                if (!isNaN(n) && isFinite(n)) maxNumber = Math.max(maxNumber, n);
+            });
+        });
+    } catch(e) {}
     const newNumber = maxNumber + 1;
 
     const newPlayer = {
@@ -404,11 +457,24 @@ function addNewPlayer() {
         name: name
     };
 
-    reservePlayers.push(newPlayer);
+    subPlayers.push(newPlayer);
     input.value = '';
+
+    // 모든 시즌 records에 새 선수 0으로 추가
+    try {
+        const allSeasons = JSON.parse(localStorage.getItem('allSeasons') || '[]');
+        allSeasons.forEach(season => {
+            if (!season.records) season.records = {};
+            if (!season.records[newNumber]) {
+                season.records[newNumber] = { matches: 0, goals: 0, assists: 0, mom: 0, name };
+            }
+        });
+        localStorage.setItem('allSeasons', JSON.stringify(allSeasons));
+    } catch(e) {}
 
     updateSubPlayers();
     updateTotalPlayers();
+    autoSave();
 }
 
 // 전체 선수 수 업데이트
@@ -493,4 +559,16 @@ function saveTeamSetup() {
         alert('팀 배치가 저장되었습니다!');
         window.location.href = 'index.html';
     }
+}
+
+// 조용한 자동 저장 (알림 없이 localStorage만 업데이트)
+function autoSave() {
+    const teamName = localStorage.getItem('currentTeamName') || '우리팀';
+    const allPlayers = [];
+    fieldPlayers.forEach(p => allPlayers.push({ id: p.number, number: p.number, name: p.name, onField: true, role: 'starter', x: p.x, y: p.y }));
+    subPlayers.forEach(p => allPlayers.push({ id: p.number, number: p.number, name: p.name, onField: false, role: 'sub' }));
+    reservePlayers.forEach(p => allPlayers.push({ id: p.number, number: p.number, name: p.name, onField: false, role: 'reserve' }));
+    const setup = { teamName, players: allPlayers, fieldPlayers, subPlayers, reservePlayers, savedDate: new Date().toISOString() };
+    localStorage.setItem('teamSetup', JSON.stringify(setup));
+    localStorage.setItem('currentTeam', JSON.stringify({ name: teamName, players: allPlayers, createdDate: new Date().toISOString() }));
 }

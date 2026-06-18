@@ -585,12 +585,44 @@
             }
         }
 
+        /* 선수 우클릭 컨텍스트 메뉴 */
+        #playerContextMenu {
+            position: fixed;
+            z-index: 9999;
+            background: #fff;
+            border: 1px solid rgba(0,0,0,0.12);
+            border-radius: 8px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            padding: 4px 0;
+            display: none;
+            min-width: 110px;
+        }
+        #playerContextMenu button {
+            display: block;
+            width: 100%;
+            padding: 9px 16px;
+            background: none;
+            border: none;
+            text-align: left;
+            font-size: 13px;
+            cursor: pointer;
+            color: #d93636;
+            font-family: 'Archivo', sans-serif;
+        }
+        #playerContextMenu button:hover { background: rgba(217,54,54,0.08); }
+
+        /* 드래그 중 뒤로가기 제스처 방지 */
+        html, body { overscroll-behavior-x: none; }
+        .soccer-field { overscroll-behavior: none; touch-action: none; }
+
         /* === gm light theme overrides === */
-        body { --gm-bg: url('assets/bg-field.png'); background: #fff !important; }
+        body { background: transparent !important; padding: 0 !important; }
         .container { padding-top: 80px; }
         .header h1 { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
-        .team-name-display { color: var(--gm-blue) !important; font-family:'Space Mono',monospace !important; letter-spacing:0.1em; }
-        .players-list-section, .field-section, .sub-section { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; }
+        .team-name-display { color: #0a0a0a !important; font-family:'Space Mono',monospace !important; letter-spacing:0.1em; }
+        .field-section { background:transparent !important; border-radius:0 !important; box-shadow:none !important; border:none !important; }
+        .players-list-section, .sub-section { background:#fff !important; border-radius:14px !important; box-shadow:0 6px 15px rgba(0,10,40,0.09) !important; border:1px solid var(--gm-line) !important; }
+        .header, .button-section { background:transparent !important; border:none !important; box-shadow:none !important; border-radius:0 !important; }
         .players-list-section h3, .sub-section h3 { color: var(--gm-ink) !important; font-family:'Archivo Black','Pretendard',sans-serif !important; }
         .btn { font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.1em; border-radius:8px !important; }
         .save-btn { background:#f5f5f5 !important; color:#1a1a1a !important; border:none !important; box-shadow:0 4px 12px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.6) !important; }
@@ -598,14 +630,155 @@
         .reset-btn { background:#fff !important; color:var(--gm-ink) !important; border:none !important; box-shadow:0 3px 10px rgba(0,0,0,0.12) !important; }
         .reset-btn:hover { background:#f5f7fb !important; }
         .success-message { background: var(--gm-ink) !important; font-family:'Space Mono',monospace !important; text-transform:uppercase; letter-spacing:0.15em; }
+
+        /* ===== 팀 공유 카드 (이미지 저장용) — 인스타 4:5 ===== */
+        #teamShareCard {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 432px;
+            height: 540px;
+            display: flex;
+            overflow: hidden;
+            font-family: 'Archivo Black', 'Pretendard', sans-serif;
+        }
+
+        /* 왼쪽: 경기장 패널 */
+        .tsc-left {
+            width: 255px;
+            flex-shrink: 0;
+            background: repeating-linear-gradient(0deg,#4a9a3f 0px,#4a9a3f 22px,#3e8a33 22px,#3e8a33 44px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px 12px;
+        }
+        .tsc-field-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            color: rgba(255,255,255,0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+        }
+        /* 경기장: 2:3 비율 유지 */
+        .tsc-mini-field {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            background: repeating-linear-gradient(0deg,#4a9a3f 0px,#4a9a3f 20px,#3e8a33 20px,#3e8a33 40px);
+            border: 2px solid rgba(255,255,255,0.9);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.12), 0 8px 28px rgba(0,0,0,0.32);
+            overflow: hidden;
+        }
+        .tsc-field-svg {
+            position: absolute;
+            inset: 0; width: 100%; height: 100%;
+        }
+        .tsc-players-layer {
+            position: absolute;
+            inset: 0;
+        }
+        .tsc-player-circle {
+            position: absolute;
+            width: 26px; height: 26px;
+            background: #fff;
+            border: 1.5px solid rgba(0,0,0,0.12);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 6px;
+            color: #1a3a0a;
+            text-align: center;
+            line-height: 1.1;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+            overflow: hidden;
+            padding: 1px;
+        }
+
+        /* 오른쪽: 정보 패널 */
+        .tsc-right {
+            flex: 1;
+            background: #f4f7f1;
+            display: flex;
+            flex-direction: column;
+            padding: 22px 18px 18px;
+            gap: 0;
+        }
+        .tsc-right-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(0,0,0,0.10);
+        }
+        .tsc-logo {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            object-fit: contain;
+            background: rgba(255,255,255,0.8);
+            flex-shrink: 0;
+            border: 1.5px solid rgba(0,0,0,0.08);
+        }
+        .tsc-team-name {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 15px;
+            color: #1a1a1a;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        .tsc-section {
+            margin-bottom: 14px;
+        }
+        .tsc-section-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 8px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin-bottom: 7px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(0,0,0,0.07);
+        }
+        .tsc-player-row {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .tsc-player-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: #aaa;
+            min-width: 14px;
+        }
+        .tsc-player-name-right {
+            font-family: 'Archivo', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2a2a2a;
+        }
+        .tsc-empty-note {
+            font-family: 'Space Mono', monospace;
+            font-size: 9px;
+            color: #bbb;
+            letter-spacing: 0.05em;
+        }
     </style>
+    <script src="bg-random.js"></script>
 </head>
 <body>
     <nav class="gm-nav">
         <a href="index.html" class="gm-nav-logo"><img src="logo.png" alt="g-Manager" /></a>
         <div class="gm-nav-links">
             <a href="records.html">Records</a>
-            <a href="team.html">My Team</a>
+            <a href="field.html" class="active">My Team</a>
             <a href="team-info.html">Edit Team</a>
             <a href="login.html">Login</a>
         </div>
@@ -613,7 +786,6 @@
     <div class="container">
         <!-- 헤더 -->
         <div class="header">
-            <h1>BEST 11</h1>
             <div class="team-name-display" id="teamNameDisplay">우리팀</div>
         </div>
 
@@ -674,12 +846,228 @@
         <!-- 하단: 버튼 -->
         <div class="button-section">
             <button class="btn save-btn" onclick="saveTeamSetup()">저장</button>
+            <button class="btn save-btn" onclick="saveTeamImage()">이미지로 저장</button>
             <button class="btn reset-btn" onclick="window.location.href='index.html'">메인으로</button>
         </div>
     </div>
 
     <div class="success-message" id="successMessage">저장되었습니다</div>
 
+    <div id="playerContextMenu">
+        <button id="playerDeleteBtn">선수 삭제</button>
+    </div>
+
+    <!-- 팀 공유 카드 (이미지 저장용 - 화면 밖) -->
+    <div id="teamShareCard">
+        <!-- 왼쪽: 축구장 패널 -->
+        <div class="tsc-left">
+            <div class="tsc-field-label">LINEUP</div>
+            <div class="tsc-mini-field">
+                <svg class="tsc-field-svg" viewBox="0 0 100 150" preserveAspectRatio="none">
+                    <rect x="2" y="1" width="96" height="148" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.2"/>
+                    <line x1="2" y1="75" x2="98" y2="75" stroke="rgba(255,255,255,0.85)" stroke-width="1"/>
+                    <circle cx="50" cy="75" r="12" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="0.9"/>
+                    <circle cx="50" cy="75" r="1.5" fill="rgba(255,255,255,0.95)"/>
+                    <rect x="24" y="1" width="52" height="22" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="0.9"/>
+                    <rect x="36" y="1" width="28" height="9" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="0.9"/>
+                    <rect x="24" y="127" width="52" height="22" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="0.9"/>
+                    <rect x="36" y="140" width="28" height="9" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="0.9"/>
+                    <circle cx="50" cy="15" r="1.2" fill="rgba(255,255,255,0.95)"/>
+                    <circle cx="50" cy="135" r="1.2" fill="rgba(255,255,255,0.95)"/>
+                </svg>
+                <div class="tsc-players-layer" id="tscPlayersLayer"></div>
+            </div>
+        </div>
+        <!-- 오른쪽: 팀 정보 패널 -->
+        <div class="tsc-right">
+            <div class="tsc-right-header">
+                <img class="tsc-logo" id="tscLogo" src="" alt="" style="display:none;">
+                <div class="tsc-team-name" id="tscTeamName"></div>
+            </div>
+            <div class="tsc-section">
+                <div class="tsc-section-label">교체</div>
+                <div id="tscSubList"></div>
+            </div>
+            <div class="tsc-section">
+                <div class="tsc-section-label">후보</div>
+                <div id="tscBenchList"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // 마우스 사이드 버튼(뒤로/앞으로) 및 드래그 스와이프 뒤로가기 방지
+    document.addEventListener('mousedown', (e) => {
+        if (e.button === 3 || e.button === 4) e.preventDefault();
+    }, true);
+    document.addEventListener('dragover', (e) => e.preventDefault());
+    </script>
     <script src="field.js"></script>
+    <script>
+    function saveTeamImage() {
+        const btn = event.currentTarget;
+        btn.disabled = true;
+        btn.textContent = '저장 중...';
+
+        const teamNameStr = localStorage.getItem('currentTeamName') || '우리팀';
+        const SCALE = 2;
+
+        // 캔버스 크기 설정
+        const FIELD_W = 340, FIELD_H = 510; // 2:3 비율
+        const PANEL_W = 220;
+        const PAD = 24;
+        const HEADER_H = 60;
+        const TOTAL_W = FIELD_W + PANEL_W + PAD * 3;
+        const TOTAL_H = FIELD_H + HEADER_H + PAD * 2;
+
+        const canvas = document.createElement('canvas');
+        canvas.width  = TOTAL_W  * SCALE;
+        canvas.height = TOTAL_H * SCALE;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(SCALE, SCALE);
+
+        // 배경
+        ctx.fillStyle = '#f5f7fb';
+        ctx.fillRect(0, 0, TOTAL_W, TOTAL_H);
+
+        // ── 헤더: 팀 이름 ──
+        ctx.fillStyle = '#0a0a0a';
+        ctx.font = 'bold 22px "Space Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(teamNameStr, TOTAL_W / 2, PAD + 28);
+
+        const FX = PAD, FY = HEADER_H + PAD;
+
+        // ── 축구장 배경 줄무늬 (필드 영역으로 클리핑) ──
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(FX, FY, FIELD_W, FIELD_H);
+        ctx.clip();
+        const stripeH = 34;
+        for (let y = 0; y < FIELD_H; y += stripeH * 2) {
+            ctx.fillStyle = '#4a9a3f';
+            ctx.fillRect(FX, FY + y, FIELD_W, stripeH);
+            ctx.fillStyle = '#5ba83f';
+            ctx.fillRect(FX, FY + y + stripeH, FIELD_W, stripeH);
+        }
+        ctx.restore();
+
+        // ── 필드 라인 그리기 함수 ──
+        function fl(x1, y1, x2, y2) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(FX + x1 * FIELD_W, FY + y1 * FIELD_H);
+            ctx.lineTo(FX + x2 * FIELD_W, FY + y2 * FIELD_H);
+            ctx.stroke();
+        }
+        function fc2(cx, cy, r, full) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(FX + cx * FIELD_W, FY + cy * FIELD_H, r, 0, full ? Math.PI * 2 : Math.PI);
+            ctx.stroke();
+        }
+
+        // 외곽선
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 2;
+        ctx.strokeRect(FX + 2, FY + 2, FIELD_W - 4, FIELD_H - 4);
+        // 센터 라인
+        fl(0.04, 0.5, 0.96, 0.5);
+        // 센터 서클
+        ctx.beginPath();
+        ctx.arc(FX + FIELD_W / 2, FY + FIELD_H / 2, FIELD_W * 0.15, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 1.5; ctx.stroke();
+        // 센터 점
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.beginPath(); ctx.arc(FX + FIELD_W / 2, FY + FIELD_H / 2, 3, 0, Math.PI * 2); ctx.fill();
+        // 상단 페널티
+        ctx.strokeRect(FX + FIELD_W * 0.22, FY + 2, FIELD_W * 0.56, FIELD_H * 0.16);
+        ctx.strokeRect(FX + FIELD_W * 0.35, FY + 2, FIELD_W * 0.3, FIELD_H * 0.065);
+        // 하단 페널티
+        ctx.strokeRect(FX + FIELD_W * 0.22, FY + FIELD_H - FIELD_H * 0.16 - 2, FIELD_W * 0.56, FIELD_H * 0.16);
+        ctx.strokeRect(FX + FIELD_W * 0.35, FY + FIELD_H - FIELD_H * 0.065 - 2, FIELD_W * 0.3, FIELD_H * 0.065);
+
+        // ── 선수 원 ──
+        (fieldPlayers || []).forEach(p => {
+            const px = FX + (p.x !== undefined ? p.x / 100 : 0.5) * FIELD_W;
+            const py = FY + (p.y !== undefined ? p.y / 100 : 0.5) * FIELD_H;
+            const r = 22;
+            // 원 배경
+            const grad = ctx.createRadialGradient(px - 3, py - 3, 2, px, py, r);
+            grad.addColorStop(0, '#5ba8db');
+            grad.addColorStop(1, '#2980b9');
+            ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2);
+            ctx.fillStyle = grad; ctx.fill();
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
+            // 선수 이름
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 10px "Pretendard", sans-serif';
+            ctx.textAlign = 'center';
+            const name = (p.name || '').slice(0, 5);
+            ctx.fillText(name, px, py + 4);
+        });
+
+        // ── 오른쪽 패널: 교체 목록 ──
+        const PX = FX + FIELD_W + PAD;
+        const PY = FY;
+        const PW = PANEL_W;
+
+        // 패널 배경
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowColor = 'rgba(0,10,40,0.09)';
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.roundRect(PX, PY, PW, FIELD_H, 14);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // 패널 헤더
+        ctx.fillStyle = '#0a0a0a';
+        ctx.font = 'bold 14px "Archivo Black", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('선수 명단', PX + 16, PY + 28);
+        ctx.strokeStyle = '#4a9a3f'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(PX + 16, PY + 36); ctx.lineTo(PX + PW - 16, PY + 36); ctx.stroke();
+
+        // 교체 라벨
+        ctx.fillStyle = '#888';
+        ctx.font = '10px "Space Mono", monospace';
+        ctx.fillText('교체', PX + 16, PY + 56);
+
+        let rowY = PY + 70;
+        const rowH = 32;
+        (subPlayers || []).forEach(p => {
+            ctx.fillStyle = '#fafafa';
+            ctx.beginPath(); ctx.roundRect(PX + 12, rowY, PW - 24, rowH - 4, 6); ctx.fill();
+            ctx.strokeStyle = '#eee'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.roundRect(PX + 12, rowY, PW - 24, rowH - 4, 6); ctx.stroke();
+            // 뱃지
+            const badgeGrad = ctx.createLinearGradient(PX + 16, rowY, PX + 16, rowY + rowH);
+            badgeGrad.addColorStop(0, '#42a5f5'); badgeGrad.addColorStop(1, '#1565c0');
+            ctx.fillStyle = badgeGrad;
+            ctx.beginPath(); ctx.roundRect(PX + 16, rowY + 7, 28, 14, 3); ctx.fill();
+            ctx.fillStyle = '#fff'; ctx.font = 'bold 8px sans-serif'; ctx.textAlign = 'center';
+            ctx.fillText('교체', PX + 30, rowY + 17);
+            // 이름
+            ctx.fillStyle = '#333'; ctx.font = '12px "Pretendard", sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText((p.name || '').slice(0, 10), PX + 50, rowY + 18);
+            rowY += rowH;
+        });
+
+        if (!subPlayers || subPlayers.length === 0) {
+            ctx.fillStyle = '#bbb'; ctx.font = '11px sans-serif'; ctx.textAlign = 'left';
+            ctx.fillText('없음', PX + 16, rowY + 14);
+        }
+
+        // ── 다운로드 ──
+        const link = document.createElement('a');
+        link.download = `lineup_${teamNameStr}_${new Date().toISOString().slice(0,10)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.disabled = false;
+        btn.textContent = '이미지로 저장';
+    }
+    </script>
 </body>
 </html>
